@@ -340,7 +340,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
       gitStatusChangedListeners.delete(listener);
     };
   },
-  getFileDiff: (args: { taskPath: string; filePath: string }) =>
+  getFileDiff: (args: { taskPath: string; filePath: string; baseRef?: string }) =>
     ipcRenderer.invoke('git:get-file-diff', args),
   stageFile: (args: { taskPath: string; filePath: string }) =>
     ipcRenderer.invoke('git:stage-file', args),
@@ -479,8 +479,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     isPrivate: boolean;
     gitignoreTemplate?: string;
   }) => ipcRenderer.invoke('github:createNewProject', params),
-  githubListPullRequests: (projectPath: string) =>
-    ipcRenderer.invoke('github:listPullRequests', { projectPath }),
+  githubListPullRequests: (args: { projectPath: string; limit?: number }) =>
+    ipcRenderer.invoke('github:listPullRequests', args),
   githubCreatePullRequestWorktree: (args: {
     projectPath: string;
     projectId: string;
@@ -489,6 +489,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     taskName?: string;
     branchName?: string;
   }) => ipcRenderer.invoke('github:createPullRequestWorktree', args),
+  githubGetPullRequestBaseDiff: (args: { worktreePath: string; prNumber: number }) =>
+    ipcRenderer.invoke('github:getPullRequestBaseDiff', args),
   githubLogout: () => ipcRenderer.invoke('github:logout'),
   githubCheckCLIInstalled: () => ipcRenderer.invoke('github:checkCLIInstalled'),
   githubInstallCLI: () => ipcRenderer.invoke('github:installCLI'),
@@ -531,6 +533,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.invoke('plain:initialFetch', limit, statuses),
   plainSearchThreads: (searchTerm: string, limit?: number) =>
     ipcRenderer.invoke('plain:searchThreads', searchTerm, limit),
+  // Forgejo integration
+  forgejoSaveCredentials: (args: { instanceUrl: string; token: string }) =>
+    ipcRenderer.invoke('forgejo:saveCredentials', args),
+  forgejoClearCredentials: () => ipcRenderer.invoke('forgejo:clearCredentials'),
+  forgejoCheckConnection: () => ipcRenderer.invoke('forgejo:checkConnection'),
+  forgejoInitialFetch: (projectPath: string, limit?: number) =>
+    ipcRenderer.invoke('forgejo:initialFetch', { projectPath, limit }),
+  forgejoSearchIssues: (projectPath: string, searchTerm: string, limit?: number) =>
+    ipcRenderer.invoke('forgejo:searchIssues', { projectPath, searchTerm, limit }),
   getProviderStatuses: (opts?: { refresh?: boolean; providers?: string[]; providerId?: string }) =>
     ipcRenderer.invoke('providers:getStatuses', opts ?? {}),
   getProviderCustomConfig: (providerId: string) =>
@@ -739,6 +750,143 @@ contextBridge.exposeInMainWorld('electronAPI', {
   mcpRemoveServer: (serverName: string) => ipcRenderer.invoke('mcp:remove-server', serverName),
   mcpGetProviders: () => ipcRenderer.invoke('mcp:get-providers'),
   mcpRefreshProviders: () => ipcRenderer.invoke('mcp:refresh-providers'),
+
+  // Content Workspace
+  contentWorkspaceCreate: (args: {
+    projectId: string;
+    name: string;
+    kanbanColumns?: Array<{ id: string; name: string; status: string }>;
+    defaultAgents?: string[];
+    metadata?: Record<string, unknown>;
+  }) => ipcRenderer.invoke('content:workspace:create', args),
+  contentWorkspaceGet: (id: string) => ipcRenderer.invoke('content:workspace:get', id),
+  contentWorkspaceGetByProject: (projectId: string) =>
+    ipcRenderer.invoke('content:workspace:getByProject', projectId),
+  contentWorkspaceUpdate: (args: {
+    id: string;
+    name?: string;
+    kanbanColumns?: Array<{ id: string; name: string; status: string }>;
+    defaultAgents?: string[];
+    metadata?: Record<string, unknown>;
+  }) => ipcRenderer.invoke('content:workspace:update', args),
+  contentWorkspaceDelete: (id: string) => ipcRenderer.invoke('content:workspace:delete', id),
+
+  // Brand Guidelines
+  contentBrandCreate: (args: {
+    workspaceId: string;
+    name: string;
+    content: string;
+    isActive?: boolean;
+  }) => ipcRenderer.invoke('content:brand:create', args),
+  contentBrandGet: (id: string) => ipcRenderer.invoke('content:brand:get', id),
+  contentBrandGetByWorkspace: (workspaceId: string) =>
+    ipcRenderer.invoke('content:brand:getByWorkspace', workspaceId),
+  contentBrandGetActive: (workspaceId: string) =>
+    ipcRenderer.invoke('content:brand:getActive', workspaceId),
+  contentBrandUpdate: (args: { id: string; name?: string; content?: string; isActive?: boolean }) =>
+    ipcRenderer.invoke('content:brand:update', args),
+  contentBrandDelete: (id: string) => ipcRenderer.invoke('content:brand:delete', id),
+
+  // Collections
+  contentCollectionCreate: (args: { workspaceId: string; name: string; description?: string }) =>
+    ipcRenderer.invoke('content:collection:create', args),
+  contentCollectionGet: (id: string) => ipcRenderer.invoke('content:collection:get', id),
+  contentCollectionGetByWorkspace: (workspaceId: string) =>
+    ipcRenderer.invoke('content:collection:getByWorkspace', workspaceId),
+  contentCollectionUpdate: (args: { id: string; name?: string; description?: string }) =>
+    ipcRenderer.invoke('content:collection:update', args),
+  contentCollectionDelete: (id: string) => ipcRenderer.invoke('content:collection:delete', id),
+
+  // Knowledge Documents
+  contentKnowledgeCreate: (args: {
+    collectionId: string;
+    name: string;
+    content: string;
+    metadata?: Record<string, unknown>;
+  }) => ipcRenderer.invoke('content:knowledge:create', args),
+  contentKnowledgeUpload: (args: {
+    collectionId: string;
+    documents: Array<{
+      name: string;
+      content: string;
+      metadata?: Record<string, unknown>;
+    }>;
+  }) => ipcRenderer.invoke('content:knowledge:upload', args),
+  contentKnowledgeGet: (id: string) => ipcRenderer.invoke('content:knowledge:get', id),
+  contentKnowledgeGetByCollection: (collectionId: string) =>
+    ipcRenderer.invoke('content:knowledge:getByCollection', collectionId),
+  contentKnowledgeUpdate: (args: {
+    id: string;
+    name?: string;
+    content?: string;
+    metadata?: Record<string, unknown>;
+  }) => ipcRenderer.invoke('content:knowledge:update', args),
+  contentKnowledgeDelete: (id: string) => ipcRenderer.invoke('content:knowledge:delete', id),
+  contentKnowledgeGetContextForAgent: (collectionId: string) =>
+    ipcRenderer.invoke('content:knowledge:getContextForAgent', collectionId),
+
+  // Content Outputs
+  contentOutputCreate: (args: {
+    taskId: string;
+    agentId: string;
+    content: string;
+    metadata?: Record<string, unknown>;
+  }) => ipcRenderer.invoke('content:output:create', args),
+  contentOutputGet: (id: string) => ipcRenderer.invoke('content:output:get', id),
+  contentOutputGetByTask: (taskId: string) =>
+    ipcRenderer.invoke('content:output:getByTask', taskId),
+  contentOutputGetByTaskAndAgent: (args: { taskId: string; agentId: string }) =>
+    ipcRenderer.invoke('content:output:getByTaskAndAgent', args),
+  contentOutputGetSelected: (taskId: string) =>
+    ipcRenderer.invoke('content:output:getSelected', taskId),
+  contentOutputSelect: (id: string) => ipcRenderer.invoke('content:output:select', id),
+  contentOutputUpdate: (args: {
+    id: string;
+    content?: string;
+    metadata?: Record<string, unknown>;
+  }) => ipcRenderer.invoke('content:output:update', args),
+  contentOutputDelete: (id: string) => ipcRenderer.invoke('content:output:delete', id),
+  contentOutputDeleteByTask: (taskId: string) =>
+    ipcRenderer.invoke('content:output:deleteByTask', taskId),
+
+  // Content Context
+  contentContextGetForTask: (args: {
+    collectionId: string | null;
+    includeBrief?: boolean;
+    brief?: {
+      topic?: string;
+      audience?: string;
+      keywords?: string;
+      tone?: string;
+      notes?: string;
+    };
+    template?: string;
+  }) => ipcRenderer.invoke('content:context:getForTask', args),
+  contentContextGetForWorkspace: (workspaceId: string) =>
+    ipcRenderer.invoke('content:context:getForWorkspace', workspaceId),
+  contentContextComposePrompt: (args: {
+    collectionId: string | null;
+    userPrompt?: string;
+    role?: string;
+    includeBrief?: boolean;
+    brief?: {
+      topic?: string;
+      audience?: string;
+      keywords?: string;
+      tone?: string;
+      notes?: string;
+    };
+  }) => ipcRenderer.invoke('content:context:composePrompt', args),
+
+  // Content Export
+  contentExportClipboard: (args: { outputId: string; options?: Record<string, unknown> }) =>
+    ipcRenderer.invoke('content:export:clipboard', args),
+  contentExportFile: (args: { outputId: string; options?: Record<string, unknown> }) =>
+    ipcRenderer.invoke('content:export:file', args),
+  contentExportFolder: (args: { taskId: string; options?: Record<string, unknown> }) =>
+    ipcRenderer.invoke('content:export:folder', args),
+  contentExportSelectedToFile: (args: { taskId: string; options?: Record<string, unknown> }) =>
+    ipcRenderer.invoke('content:export:selectedToFile', args),
 });
 
 // Type definitions for the exposed API
@@ -1103,9 +1251,10 @@ export interface ElectronAPI {
     repoUrl: string,
     localPath: string
   ) => Promise<{ success: boolean; error?: string }>;
-  githubListPullRequests: (
-    projectPath: string
-  ) => Promise<{ success: boolean; prs?: any[]; error?: string }>;
+  githubListPullRequests: (args: {
+    projectPath: string;
+    limit?: number;
+  }) => Promise<{ success: boolean; prs?: any[]; totalCount?: number; error?: string }>;
   githubCreatePullRequestWorktree: (args: {
     projectPath: string;
     projectId: string;
@@ -1118,6 +1267,23 @@ export interface ElectronAPI {
     worktree?: any;
     branchName?: string;
     taskName?: string;
+    task?: {
+      id: string;
+      name: string;
+      path: string;
+      branch: string;
+      projectId: string;
+      status: string;
+      metadata?: { prNumber?: number; prTitle?: string | null };
+    };
+    error?: string;
+  }>;
+  githubGetPullRequestBaseDiff: (args: { worktreePath: string; prNumber: number }) => Promise<{
+    success: boolean;
+    diff?: string;
+    baseBranch?: string;
+    headBranch?: string;
+    prUrl?: string;
     error?: string;
   }>;
   githubLogout: () => Promise<void>;

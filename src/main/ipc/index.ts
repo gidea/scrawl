@@ -27,6 +27,8 @@ import { createRPCRouter, registerRPCRouter } from '../../shared/ipc/rpc';
 import { ipcMain } from 'electron';
 import { registerGitlabIpc } from './gitlabIpc';
 import { registerPlainIpc } from './plainIpc';
+import { registerContentIpc } from './contentIpc';
+import { registerForgejoIpc } from './forgejoIpc';
 
 export const rpcRouter = createRPCRouter({
   db: databaseController,
@@ -69,4 +71,8 @@ export function registerAllIpc() {
   registerMcpIpc();
   registerGitlabIpc();
   registerPlainIpc();
+
+  // Content Workspace IPC
+  registerContentIpc();
+  registerForgejoIpc();
 }
