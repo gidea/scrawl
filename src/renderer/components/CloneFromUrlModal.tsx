@@ -134,7 +134,7 @@ export const CloneFromUrlModal: React.FC<CloneFromUrlModalProps> = ({ onClose, o
         const settings = await rpc.appSettings.get();
         const defaultDir = settings?.projects?.defaultDirectory
           ? settings.projects.defaultDirectory
-          : '~/emdash-projects';
+          : '~/scrawl-projects';
         const localPath = `${defaultDir}/${directoryName.trim()}`;
 
         setProgress(`Cloning to ${localPath}...`);

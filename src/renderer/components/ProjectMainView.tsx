@@ -14,6 +14,7 @@ import {
   Trash2,
   Check,
   ListFilter,
+  BookOpen,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Separator } from './ui/separator';
@@ -39,6 +40,7 @@ import { Checkbox } from './ui/checkbox';
 import BaseBranchControls from './BaseBranchControls';
 import { pickDefaultBranch, type BranchOption } from './BranchSelect';
 import { ConfigEditorModal } from './ConfigEditorModal';
+import { ContentWorkspacePanel } from './content/ContentWorkspacePanel';
 import { useToast } from '../hooks/use-toast';
 import DeletePrNotice from './DeletePrNotice';
 import PrPreviewTooltip from './PrPreviewTooltip';
@@ -364,6 +366,7 @@ const ProjectMainView: React.FC<ProjectMainViewProps> = ({
   const [showDeleteWarnings, setShowDeleteWarnings] = useState(false);
   const [showDeleteActionSpinner, setShowDeleteActionSpinner] = useState(false);
   const [showConfigEditor, setShowConfigEditor] = useState(false);
+  const [showKnowledgePanel, setShowKnowledgePanel] = useState(false);
   const [searchFilter, setSearchFilter] = useState('');
   const [showFilter, setShowFilter] = useState<'active' | 'all'>('active');
   const [archivedTasks, setArchivedTasks] = useState<Task[]>([]);
@@ -803,6 +806,15 @@ const ProjectMainView: React.FC<ProjectMainViewProps> = ({
                     onBaseBranchChange={handleBaseBranchChange}
                     onOpenConfig={() => setShowConfigEditor(true)}
                   />
+                  <Button
+                    variant={showKnowledgePanel ? 'secondary' : 'outline'}
+                    size="sm"
+                    className="h-8 gap-1.5 px-3 text-xs"
+                    onClick={() => setShowKnowledgePanel((v) => !v)}
+                  >
+                    <BookOpen className="size-3.5" />
+                    Knowledge
+                  </Button>
                   {project.githubInfo?.connected && project.githubInfo.repository ? (
                     <motion.button
                       whileTap={{ scale: 0.97 }}
@@ -959,7 +971,7 @@ const ProjectMainView: React.FC<ProjectMainViewProps> = ({
                       <>
                         <span className="text-sm text-muted-foreground">
                           {filteredTasks.length} {filteredTasks.length === 1 ? 'task' : 'tasks'}{' '}
-                          with Emdash
+                          with Scrawl
                         </span>
                         {filteredTasks.length > 0 && (
                           <button
@@ -1181,6 +1193,23 @@ const ProjectMainView: React.FC<ProjectMainViewProps> = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {showKnowledgePanel && (
+        <div className="fixed inset-y-0 right-0 z-40 w-[420px] overflow-y-auto border-l bg-background shadow-xl">
+          <div className="flex items-center justify-between border-b px-4 py-3">
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <BookOpen className="size-4" />
+              Knowledge
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => setShowKnowledgePanel(false)}>
+              <X className="size-4" />
+            </Button>
+          </div>
+          <div className="p-4">
+            <ContentWorkspacePanel projectId={project.id} />
+          </div>
+        </div>
+      )}
 
       <ConfigEditorModal
         isOpen={showConfigEditor}

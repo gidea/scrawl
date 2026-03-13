@@ -39,7 +39,7 @@ import { soundPlayer } from '@/lib/soundPlayer';
 import BrowserProvider, { useBrowser } from '@/providers/BrowserProvider';
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { SettingsPageTab } from '@/components/SettingsPage';
-const PANEL_RESIZE_DRAGGING_EVENT = 'emdash:panel-resize-dragging';
+const PANEL_RESIZE_DRAGGING_EVENT = 'scrawl:panel-resize-dragging';
 type ResizeHandleId = 'left' | 'right';
 
 const RightSidebarBridge: React.FC<{
@@ -180,7 +180,7 @@ export function Workspace() {
   // Listen for native menu "Close Tab" (Cmd+W) — dispatches to active ChatInterface
   useEffect(() => {
     const cleanup = window.electronAPI.onMenuCloseTab?.(() => {
-      window.dispatchEvent(new CustomEvent('emdash:close-active-chat'));
+      window.dispatchEvent(new CustomEvent('scrawl:close-active-chat'));
     });
     return () => cleanup?.();
   }, []);
@@ -320,7 +320,7 @@ export function Workspace() {
   ]);
 
   const handleOpenInEditor = useCallback(() => {
-    window.dispatchEvent(new CustomEvent('emdash:open-in-editor'));
+    window.dispatchEvent(new CustomEvent('scrawl:open-in-editor'));
   }, []);
 
   const handleToggleSettingsPage = useCallback(() => {

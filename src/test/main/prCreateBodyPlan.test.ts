@@ -8,7 +8,7 @@ describe('getCreatePrBodyPlan', () => {
       title: 'feat: add workflow',
       rawBody: undefined,
       enrichedBody:
-        '<!-- emdash-issue-footer:start -->\nFixes #42\n<!-- emdash-issue-footer:end -->',
+        '<!-- scrawl-issue-footer:start -->\nFixes #42\n<!-- scrawl-issue-footer:end -->',
     });
 
     expect(plan).toEqual({
@@ -24,7 +24,7 @@ describe('getCreatePrBodyPlan', () => {
       title: 'feat: add workflow',
       rawBody: '## Summary\nUser body',
       enrichedBody:
-        '## Summary\nUser body\n\n<!-- emdash-issue-footer:start -->\nFixes #42\n<!-- emdash-issue-footer:end -->',
+        '## Summary\nUser body\n\n<!-- scrawl-issue-footer:start -->\nFixes #42\n<!-- scrawl-issue-footer:end -->',
     });
 
     expect(plan).toEqual({
@@ -40,7 +40,7 @@ describe('getCreatePrBodyPlan', () => {
       title: undefined,
       rawBody: '## Summary\nUser body',
       enrichedBody:
-        '## Summary\nUser body\n\n<!-- emdash-issue-footer:start -->\nFixes #42\n<!-- emdash-issue-footer:end -->',
+        '## Summary\nUser body\n\n<!-- scrawl-issue-footer:start -->\nFixes #42\n<!-- scrawl-issue-footer:end -->',
     });
 
     expect(plan).toEqual({

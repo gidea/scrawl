@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('electron', () => ({
   app: {
-    getPath: () => '/tmp/emdash-test',
+    getPath: () => '/tmp/scrawl-test',
   },
 }));
 
@@ -12,7 +12,7 @@ import type { AppSettings } from '../../main/settings';
 /** Minimal valid AppSettings skeleton for normalizeSettings. */
 function makeSettings(overrides?: Partial<AppSettings>): AppSettings {
   return {
-    repository: { branchPrefix: 'emdash', pushOnCreate: true },
+    repository: { branchPrefix: 'scrawl', pushOnCreate: true },
     projectPrep: { autoInstallOnOpenInEditor: true },
     ...overrides,
   } as AppSettings;

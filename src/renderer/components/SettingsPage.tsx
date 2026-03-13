@@ -158,7 +158,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ initialTab, onClose 
   }, [onClose]);
 
   const handleDocsClick = useCallback(() => {
-    window.electronAPI.openExternal('https://docs.emdash.sh');
+    window.electronAPI.openExternal('https://docs.scrawl.sh');
   }, []);
 
   const tabs: Array<{

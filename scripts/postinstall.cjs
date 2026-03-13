@@ -1,7 +1,7 @@
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 
-if (process.env.CI || process.env.EMDASH_SKIP_ELECTRON_REBUILD === '1') {
+if (process.env.CI || process.env.SCRAWL_SKIP_ELECTRON_REBUILD === '1') {
   process.exit(0);
 }
 
@@ -32,8 +32,8 @@ function runElectronRebuild(onlyModules) {
   process.exit(typeof result.status === 'number' ? result.status : 1);
 }
 
-const disablePty = process.env.EMDASH_DISABLE_PTY === '1';
-const disableNativeDb = process.env.EMDASH_DISABLE_NATIVE_DB === '1';
+const disablePty = process.env.SCRAWL_DISABLE_PTY === '1';
+const disableNativeDb = process.env.SCRAWL_DISABLE_NATIVE_DB === '1';
 
 const nativeModules = [];
 if (!disableNativeDb) nativeModules.push('sqlite3');

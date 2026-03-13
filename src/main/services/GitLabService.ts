@@ -24,7 +24,7 @@ type GitLabCreds = {
 };
 
 export class GitLabService {
-  private readonly SERVICE_NAME = 'emdash-gitlab';
+  private readonly SERVICE_NAME = 'scrawl-gitlab';
   private readonly ACCOUNT_NAME = 'gitlab-token';
   private readonly CONF_FILE = join(app.getPath('userData'), 'gitlab.json');
 

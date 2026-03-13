@@ -72,17 +72,17 @@ export const databaseController = createRPCController({
     taskPath: string;
     conversationId: string;
   }): Promise<void> => {
-    const sessionDir = path.join(args.taskPath, '.emdash-sessions', args.conversationId);
+    const sessionDir = path.join(args.taskPath, '.scrawl-sessions', args.conversationId);
     if (!fs.existsSync(sessionDir)) return;
 
     fs.rmSync(sessionDir, { recursive: true, force: true });
     log.info('Cleaned up session directory:', sessionDir);
 
-    const parentDir = path.join(args.taskPath, '.emdash-sessions');
+    const parentDir = path.join(args.taskPath, '.scrawl-sessions');
     try {
       if (fs.readdirSync(parentDir).length === 0) {
         fs.rmdirSync(parentDir);
-        log.info('Removed empty .emdash-sessions directory');
+        log.info('Removed empty .scrawl-sessions directory');
       }
     } catch {
       // Parent directory removal is best-effort

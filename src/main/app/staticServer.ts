@@ -37,7 +37,7 @@ function isPathInside(parent: string, child: string) {
 }
 
 function getRendererPortCandidates(): number[] {
-  const raw = process.env.EMDASH_RENDERER_PORT;
+  const raw = process.env.SCRAWL_RENDERER_PORT;
   const parsed = raw ? Number.parseInt(raw, 10) : Number.NaN;
   const start = Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_RENDERER_PORT;
   return Array.from({ length: RENDERER_PORT_RANGE }, (_, i) => start + i);

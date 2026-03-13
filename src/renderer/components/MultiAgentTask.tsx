@@ -451,9 +451,9 @@ const MultiAgentTask: React.FC<Props> = ({
       });
     };
 
-    window.addEventListener('emdash:switch-agent', handleAgentSwitch);
+    window.addEventListener('scrawl:switch-agent', handleAgentSwitch);
     return () => {
-      window.removeEventListener('emdash:switch-agent', handleAgentSwitch);
+      window.removeEventListener('scrawl:switch-agent', handleAgentSwitch);
     };
   }, [variants.length]);
 
@@ -466,9 +466,9 @@ const MultiAgentTask: React.FC<Props> = ({
       setActiveTabIndex(tabIndex);
     };
 
-    window.addEventListener('emdash:select-agent-tab', handleAgentTabSelection);
+    window.addEventListener('scrawl:select-agent-tab', handleAgentTabSelection);
     return () => {
-      window.removeEventListener('emdash:select-agent-tab', handleAgentTabSelection);
+      window.removeEventListener('scrawl:select-agent-tab', handleAgentTabSelection);
     };
   }, [variants.length]);
 

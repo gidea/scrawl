@@ -19,7 +19,7 @@ This is especially useful for:
 
 ## Enabling tmux
 
-Add `"tmux": true` to your project's `.emdash.json`:
+Add `"tmux": true` to your project's `.scrawl.json`:
 
 ```json
 {
@@ -44,8 +44,8 @@ tmux must be installed on the machine where the agent runs — your local machin
 
 When you create a task or open a chat with tmux enabled:
 
-1. Scrawl spawns the agent inside `tmux new-session -As emdash-{id}` instead of a plain shell
-2. Each chat tab gets its own named tmux session (e.g., `emdash-claude-main-abc123`)
+1. Scrawl spawns the agent inside `tmux new-session -As scrawl-{id}` instead of a plain shell
+2. Each chat tab gets its own named tmux session (e.g., `scrawl-claude-main-abc123`)
 3. If the connection drops, tmux keeps the agent running in the background
 4. When Scrawl reconnects, the same `tmux new-session -As` command reattaches to the existing session
 
@@ -70,14 +70,14 @@ When you **quit Scrawl**, tmux sessions are left running (that's the point — t
 If you need to manually clean up tmux sessions, use the standard tmux commands:
 
 ```bash
-# List emdash sessions
-tmux ls | grep emdash
+# List scrawl sessions
+tmux ls | grep scrawl
 
 # Kill a specific session
-tmux kill-session -t emdash-claude-main-abc123
+tmux kill-session -t scrawl-claude-main-abc123
 
-# Kill all emdash sessions
-tmux ls | grep emdash | cut -d: -f1 | xargs -I{} tmux kill-session -t {}
+# Kill all scrawl sessions
+tmux ls | grep scrawl | cut -d: -f1 | xargs -I{} tmux kill-session -t {}
 ```
 
 ## Requirements

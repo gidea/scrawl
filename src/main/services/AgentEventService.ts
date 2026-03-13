@@ -45,7 +45,7 @@ class AgentEventService {
         return;
       }
 
-      const authToken = req.headers['x-emdash-token'];
+      const authToken = req.headers['x-scrawl-token'];
       if (authToken !== this.token) {
         log.warn('AgentEventService: rejected request with invalid token');
         res.writeHead(403);
@@ -67,8 +67,8 @@ class AgentEventService {
           // ptyId and event type come from headers (not body) so the
           // payload can be piped from stdin via `curl -d @-` without
           // any shell interpolation of its contents.
-          const ptyId = String(req.headers['x-emdash-pty-id'] || '');
-          const type = String(req.headers['x-emdash-event-type'] || '');
+          const ptyId = String(req.headers['x-scrawl-pty-id'] || '');
+          const type = String(req.headers['x-scrawl-event-type'] || '');
 
           if (!ptyId || !type) {
             log.warn('AgentEventService: malformed request — missing ptyId or type headers');

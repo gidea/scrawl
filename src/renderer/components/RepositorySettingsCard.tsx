@@ -9,7 +9,7 @@ type RepoSettings = {
 };
 
 const DEFAULTS: RepoSettings = {
-  branchPrefix: 'emdash',
+  branchPrefix: 'scrawl',
   pushOnCreate: true,
 };
 

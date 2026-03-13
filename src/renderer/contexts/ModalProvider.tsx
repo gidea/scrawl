@@ -60,7 +60,7 @@ export function ModalProvider({ children }: { children: ReactNode }) {
   }, [activeModalId]);
 
   const dispatchOverlayEvent = (open: boolean) => {
-    window.dispatchEvent(new CustomEvent('emdash:overlay:changed', { detail: { open } }));
+    window.dispatchEvent(new CustomEvent('scrawl:overlay:changed', { detail: { open } }));
   };
 
   const closeModal = useCallback(() => {

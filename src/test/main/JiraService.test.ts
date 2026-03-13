@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 
 vi.mock('electron', () => ({
-  app: { getPath: () => '/tmp/test-emdash' },
+  app: { getPath: () => '/tmp/test-scrawl' },
 }));
 
 import JiraService from '../../main/services/JiraService';

@@ -64,14 +64,14 @@ const AppKeyboardShortcuts: React.FC<AppKeyboardShortcutsProps> = ({
     onNewTask: handleNewTask,
     onNextAgent: () =>
       window.dispatchEvent(
-        new CustomEvent('emdash:switch-agent', { detail: { direction: 'next' } })
+        new CustomEvent('scrawl:switch-agent', { detail: { direction: 'next' } })
       ),
     onPrevAgent: () =>
       window.dispatchEvent(
-        new CustomEvent('emdash:switch-agent', { detail: { direction: 'prev' } })
+        new CustomEvent('scrawl:switch-agent', { detail: { direction: 'prev' } })
       ),
     onSelectAgentTab: (tabIndex) =>
-      window.dispatchEvent(new CustomEvent('emdash:select-agent-tab', { detail: { tabIndex } })),
+      window.dispatchEvent(new CustomEvent('scrawl:select-agent-tab', { detail: { tabIndex } })),
     onOpenInEditor: handleOpenInEditor,
     onCloseModal: (
       [

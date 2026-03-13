@@ -54,6 +54,7 @@ export interface Task {
   metadata?: any;
   useWorktree?: boolean;
   archivedAt?: string | null;
+  collectionId?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -109,7 +110,7 @@ export class DatabaseService {
   private lastMigrationSummary: MigrationSummary | null = null;
 
   constructor() {
-    if (process.env.EMDASH_DISABLE_NATIVE_DB === '1') {
+    if (process.env.SCRAWL_DISABLE_NATIVE_DB === '1') {
       this.disabled = true;
     }
     this.dbPath = resolveDatabasePath();
@@ -306,6 +307,7 @@ export class DatabaseService {
         agentId: task.agentId ?? null,
         metadata: metadataValue,
         useWorktree: task.useWorktree !== false ? 1 : 0,
+        collectionId: task.collectionId ?? null,
         updatedAt: sql`CURRENT_TIMESTAMP`,
       })
       .onConflictDoUpdate({
@@ -319,6 +321,7 @@ export class DatabaseService {
           agentId: task.agentId ?? null,
           metadata: metadataValue,
           useWorktree: task.useWorktree !== false ? 1 : 0,
+          collectionId: task.collectionId ?? null,
           updatedAt: sql`CURRENT_TIMESTAMP`,
         },
       });
@@ -949,6 +952,7 @@ export class DatabaseService {
           : null,
       useWorktree: row.useWorktree === 1,
       archivedAt: row.archivedAt ?? null,
+      collectionId: row.collectionId ?? null,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
     };
@@ -1020,7 +1024,7 @@ export class DatabaseService {
         '3. The installation is incomplete or corrupted',
         '4. Security software is blocking file access',
         '',
-        'To fix: Try downloading and installing Emdash directly from:',
+        'To fix: Try downloading and installing Scrawl directly from:',
         'https://github.com/gidea/scrawl/releases',
         '',
       ].join('\n');

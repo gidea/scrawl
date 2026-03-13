@@ -32,7 +32,7 @@ const MIN_RENDERABLE_TERMINAL_HEIGHT_PX = 24;
 const PTY_RESIZE_DEBOUNCE_MS = 60;
 const MIN_TERMINAL_COLS = 2;
 const MIN_TERMINAL_ROWS = 1;
-const PANEL_RESIZE_DRAGGING_EVENT = 'emdash:panel-resize-dragging';
+const PANEL_RESIZE_DRAGGING_EVENT = 'scrawl:panel-resize-dragging';
 const IS_MAC_PLATFORM =
   typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform);
 

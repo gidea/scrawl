@@ -21,17 +21,17 @@ import { resolveDatabasePath } from '../../main/db/path';
 describe('resolveDatabasePath', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    delete process.env.EMDASH_DB_FILE;
-    getPathMock.mockReturnValue('/tmp/emdash-user-data');
+    delete process.env.SCRAWL_DB_FILE;
+    getPathMock.mockReturnValue('/tmp/scrawl-user-data');
     existsSyncMock.mockReturnValue(false);
   });
 
   afterEach(() => {
-    delete process.env.EMDASH_DB_FILE;
+    delete process.env.SCRAWL_DB_FILE;
   });
 
-  it('uses EMDASH_DB_FILE override when set', () => {
-    process.env.EMDASH_DB_FILE = './tmp/test-db/custom.db';
+  it('uses SCRAWL_DB_FILE override when set', () => {
+    process.env.SCRAWL_DB_FILE = './tmp/test-db/custom.db';
 
     const result = resolveDatabasePath();
 
@@ -42,7 +42,7 @@ describe('resolveDatabasePath', () => {
   it('falls back to userData path when no override is provided', () => {
     const result = resolveDatabasePath();
 
-    expect(result).toBe('/tmp/emdash-user-data/emdash.db');
+    expect(result).toBe('/tmp/scrawl-user-data/scrawl.db');
     expect(getPathMock).toHaveBeenCalledWith('userData');
   });
 });

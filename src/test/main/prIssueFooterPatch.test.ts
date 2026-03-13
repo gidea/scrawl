@@ -81,7 +81,7 @@ describe('patchCurrentPrBodyWithIssueFooter', () => {
       if (args[0] === 'pr' && args[1] === 'view') {
         return {
           stdout:
-            'Body text\n\n<!-- emdash-issue-footer:start -->\nFixes #42\n<!-- emdash-issue-footer:end -->\n',
+            'Body text\n\n<!-- scrawl-issue-footer:start -->\nFixes #42\n<!-- scrawl-issue-footer:end -->\n',
         };
       }
       throw new Error(`Unexpected command args: ${args.join(' ')}`);

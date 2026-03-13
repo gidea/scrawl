@@ -2,7 +2,7 @@ import { existsSync, renameSync } from 'fs';
 import { dirname, join, resolve } from 'path';
 import { app } from 'electron';
 
-const CURRENT_DB_FILENAME = 'emdash.db';
+const CURRENT_DB_FILENAME = 'scrawl.db';
 const LEGACY_DB_FILENAMES = ['database.sqlite', 'orcbench.db'];
 
 export interface ResolveDatabasePathOptions {
@@ -10,7 +10,7 @@ export interface ResolveDatabasePathOptions {
 }
 
 export function resolveDatabasePath(options: ResolveDatabasePathOptions = {}): string {
-  const explicitDbFile = process.env.EMDASH_DB_FILE?.trim();
+  const explicitDbFile = process.env.SCRAWL_DB_FILE?.trim();
   if (explicitDbFile) {
     return resolve(explicitDbFile);
   }
@@ -26,7 +26,7 @@ export function resolveDatabasePath(options: ResolveDatabasePathOptions = {}): s
   // (e.g. ~/Library/Application Support/Electron).
   try {
     const userDataParent = dirname(userDataPath);
-    const legacyDirs = ['Electron', 'emdash', 'Emdash'];
+    const legacyDirs = ['Electron', 'scrawl', 'Scrawl'];
     for (const dirName of legacyDirs) {
       const candidateDir = join(userDataParent, dirName);
       const candidateCurrent = join(candidateDir, CURRENT_DB_FILENAME);

@@ -21,7 +21,7 @@ export interface ContentColumn {
   title: string;
 }
 
-const STORAGE_KEY = 'emdash:content-kanban:statusByTask';
+const STORAGE_KEY = 'scrawl:content-kanban:statusByTask';
 
 type MapShape = Record<string, string>;
 

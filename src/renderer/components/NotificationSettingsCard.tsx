@@ -93,7 +93,7 @@ const NotificationSettingsCard: React.FC = () => {
           <div className="flex flex-1 flex-col gap-0.5">
             <p className="text-sm font-medium text-foreground">OS notifications</p>
             <p className="text-sm text-muted-foreground">
-              Show system banners when agents need attention or finish (while Emdash is unfocused).
+              Show system banners when agents need attention or finish (while Scrawl is unfocused).
             </p>
           </div>
           <Switch

@@ -13,7 +13,7 @@ type ForgejoCreds = {
 };
 
 export class ForgejoService {
-  private readonly SERVICE_NAME = 'emdash-forgejo';
+  private readonly SERVICE_NAME = 'scrawl-forgejo';
   private readonly ACCOUNT_NAME = 'forgejo-token';
   private readonly CONF_FILE = join(app.getPath('userData'), 'forgejo.json');
 

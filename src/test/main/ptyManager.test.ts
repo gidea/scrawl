@@ -54,7 +54,7 @@ vi.mock('fs', () => {
 
 vi.mock('electron', () => ({
   app: {
-    getPath: () => '/tmp/emdash-test',
+    getPath: () => '/tmp/scrawl-test',
   },
 }));
 
@@ -211,8 +211,8 @@ describe('ptyManager provider command resolution', () => {
 
     expect(args).toContain('-c');
     const notifyArg = args.find((arg) => arg.startsWith('notify='));
-    expect(notifyArg).toContain('X-Emdash-Event-Type: notification');
-    expect(notifyArg).toContain('$EMDASH_HOOK_PORT');
+    expect(notifyArg).toContain('X-Scrawl-Event-Type: notification');
+    expect(notifyArg).toContain('$SCRAWL_HOOK_PORT');
   });
 
   it('uses a PowerShell file for Codex notify runtime config on Windows', async () => {
@@ -228,10 +228,10 @@ describe('ptyManager provider command resolution', () => {
     const notifyArg = args.find((arg) => arg.startsWith('notify='));
     expect(notifyArg).toContain('powershell.exe');
     expect(notifyArg).toContain('"-File"');
-    expect(notifyArg).toContain('emdash-codex-notify.ps1');
+    expect(notifyArg).toContain('scrawl-codex-notify.ps1');
     expect(notifyArg).not.toContain('"sh"');
     expect(fsWriteFileSyncMock).toHaveBeenCalledWith(
-      expect.stringContaining('emdash-codex-notify.ps1'),
+      expect.stringContaining('scrawl-codex-notify.ps1'),
       expect.stringContaining('param([string]$payload)')
     );
     expect(fsMkdirSyncMock).toHaveBeenCalled();
@@ -252,7 +252,7 @@ describe('ptyManager provider command resolution', () => {
     const { getStoredExactResumeArgs, _resetSessionMapForTest } = await import(
       '../../main/services/ptyManager'
     );
-    _resetSessionMapForTest('/tmp/emdash-test/pty-session-map.json');
+    _resetSessionMapForTest('/tmp/scrawl-test/pty-session-map.json');
 
     expect(getStoredExactResumeArgs('codex', 'codex-main-task123', '/tmp/task')).toEqual([
       'resume',
@@ -270,14 +270,14 @@ describe('ptyManager provider command resolution', () => {
     });
 
     expect(env.OPENCODE_CONFIG_DIR).toBe(
-      '/tmp/emdash-test/agent-hooks/opencode/opencode-main-task-123'
+      '/tmp/scrawl-test/agent-hooks/opencode/opencode-main-task-123'
     );
     expect(fsMkdirSyncMock).toHaveBeenCalledWith(
-      '/tmp/emdash-test/agent-hooks/opencode/opencode-main-task-123/plugins',
+      '/tmp/scrawl-test/agent-hooks/opencode/opencode-main-task-123/plugins',
       { recursive: true }
     );
     expect(fsWriteFileSyncMock).toHaveBeenCalledWith(
-      '/tmp/emdash-test/agent-hooks/opencode/opencode-main-task-123/plugins/emdash-notify.js',
+      '/tmp/scrawl-test/agent-hooks/opencode/opencode-main-task-123/plugins/scrawl-notify.js',
       expect.stringContaining('session.idle')
     );
   });
@@ -297,7 +297,7 @@ describe('ptyManager provider command resolution', () => {
 });
 
 describe('stale Claude session detection', () => {
-  const SESSION_MAP_PATH = '/tmp/emdash-test/pty-session-map.json';
+  const SESSION_MAP_PATH = '/tmp/scrawl-test/pty-session-map.json';
   const TEST_CWD = '/tmp/test-worktree';
   const TEST_UUID = 'test-uuid-00000000-0000-0000-0000';
   const PTY_ID = 'claude-main-task123';

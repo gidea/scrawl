@@ -15,17 +15,17 @@ export class ClaudeHookService {
     return (
       'curl -sf -X POST ' +
       '-H "Content-Type: application/json" ' +
-      '-H "X-Emdash-Token: $EMDASH_HOOK_TOKEN" ' +
-      `-H "X-Emdash-Pty-Id: $EMDASH_PTY_ID" ` +
-      `-H "X-Emdash-Event-Type: ${type}" ` +
+      '-H "X-Scrawl-Token: $SCRAWL_HOOK_TOKEN" ' +
+      `-H "X-Scrawl-Pty-Id: $SCRAWL_PTY_ID" ` +
+      `-H "X-Scrawl-Event-Type: ${type}" ` +
       '-d @- ' +
-      '"http://127.0.0.1:$EMDASH_HOOK_PORT/hook" || true'
+      '"http://127.0.0.1:$SCRAWL_HOOK_PORT/hook" || true'
     );
   }
 
   /**
-   * Merge emdash hook entries into an existing settings object.
-   * Strips old emdash entries (identified by the EMDASH_HOOK_PORT marker),
+   * Merge scrawl hook entries into an existing settings object.
+   * Strips old scrawl entries (identified by the SCRAWL_HOOK_PORT marker),
    * preserves user-defined hooks, and appends fresh Notification + Stop entries.
    * Returns the mutated object.
    */
@@ -36,7 +36,7 @@ export class ClaudeHookService {
     for (const eventType of ['Notification', 'Stop'] as const) {
       const prev: unknown[] = Array.isArray(hooks[eventType]) ? hooks[eventType] : [];
       const userEntries = prev.filter(
-        (entry: any) => !JSON.stringify(entry).includes('EMDASH_HOOK_PORT')
+        (entry: any) => !JSON.stringify(entry).includes('SCRAWL_HOOK_PORT')
       );
       userEntries.push({
         hooks: [

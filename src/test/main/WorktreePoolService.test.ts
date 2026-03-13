@@ -8,7 +8,7 @@ import { WorktreePoolService } from '../../main/services/WorktreePoolService';
 vi.mock('electron', () => ({
   app: {
     getPath: vi.fn().mockReturnValue(os.tmpdir()),
-    getName: vi.fn().mockReturnValue('emdash-test'),
+    getName: vi.fn().mockReturnValue('scrawl-test'),
     getVersion: vi.fn().mockReturnValue('0.0.0-test'),
   },
 }));
@@ -41,7 +41,7 @@ vi.mock('../../main/lib/logger', () => ({
 vi.mock('../../main/settings', () => ({
   getAppSettings: vi.fn().mockReturnValue({
     repository: {
-      branchPrefix: 'emdash',
+      branchPrefix: 'scrawl',
       pushOnCreate: false,
     },
   }),
@@ -60,10 +60,10 @@ describe('WorktreePoolService', () => {
     fs.writeFileSync(path.join(repoPath, 'README.md'), '# Test');
     fs.writeFileSync(path.join(repoPath, '.gitignore'), '.claude/\n');
     fs.writeFileSync(
-      path.join(repoPath, '.emdash.json'),
+      path.join(repoPath, '.scrawl.json'),
       JSON.stringify({ preservePatterns: ['.claude/**'] }, null, 2)
     );
-    execSync('git add README.md .gitignore .emdash.json', { cwd: repoPath, stdio: 'pipe' });
+    execSync('git add README.md .gitignore .scrawl.json', { cwd: repoPath, stdio: 'pipe' });
     execSync('git commit -m "init"', { cwd: repoPath, stdio: 'pipe' });
     fs.mkdirSync(path.join(repoPath, '.claude'), { recursive: true });
     fs.writeFileSync(

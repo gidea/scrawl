@@ -47,7 +47,7 @@ export type ProviderDefinition = {
    * CLI flag to assign a unique session ID per chat instance.
    * Used to isolate session state when multiple chats of the same provider
    * run in the same worktree. The flag receives a deterministic UUID
-   * derived from the Emdash conversation ID.
+   * derived from the Scrawl conversation ID.
    * e.g. '--session-id' for Claude Code.
    */
   sessionIdFlag?: string;

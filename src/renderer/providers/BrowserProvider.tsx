@@ -170,7 +170,7 @@ export const BrowserProvider: React.FC<{ children: React.ReactNode }> = ({ child
   return (
     <Ctx.Provider value={value}>
       {children}
-      <div id="emdash-browser-root" />
+      <div id="scrawl-browser-root" />
       <BrowserViewRefBinder refObj={webviewRef} onUrlChange={setUrl} />
     </Ctx.Provider>
   );
@@ -197,8 +197,8 @@ const BrowserViewRefBinder: React.FC<{
         onUrlChange(typeof url === 'string' ? url : null);
       }
     };
-    window.addEventListener('emdash:browser:internal', handler as any);
-    return () => window.removeEventListener('emdash:browser:internal', handler as any);
+    window.addEventListener('scrawl:browser:internal', handler as any);
+    return () => window.removeEventListener('scrawl:browser:internal', handler as any);
   }, [refObj, onUrlChange]);
   return null;
 };

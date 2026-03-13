@@ -10,7 +10,7 @@ export function createMainWindow(): BrowserWindow {
   // In development, resolve icon from src/assets
   // In production (packaged), electron-builder handles the icon
   const iconPath = isDev
-    ? join(__dirname, '..', '..', '..', 'src', 'assets', 'images', 'emdash', 'emdash_logo.png')
+    ? join(__dirname, '..', '..', '..', 'src', 'assets', 'images', 'scrawl', 'scrawl_logo.png')
     : undefined;
 
   mainWindow = new BrowserWindow({
@@ -18,7 +18,7 @@ export function createMainWindow(): BrowserWindow {
     height: 900,
     minWidth: 700,
     minHeight: 500,
-    title: 'Emdash',
+    title: 'Scrawl',
     ...(iconPath && { icon: iconPath }),
     webPreferences: {
       nodeIntegration: false,

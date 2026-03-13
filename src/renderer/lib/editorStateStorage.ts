@@ -5,7 +5,7 @@ export interface EditorState {
   pinnedFiles?: string[];
 }
 
-const KEY_PREFIX = 'emdash:editorState:';
+const KEY_PREFIX = 'scrawl:editorState:';
 
 function getKey(taskId: string): string {
   return `${KEY_PREFIX}${taskId}`;

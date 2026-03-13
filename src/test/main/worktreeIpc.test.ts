@@ -101,7 +101,7 @@ describe('worktreeIpc claimReserveAndSaveTask', () => {
       worktree: {
         id: 'wt-123',
         name: 'task-a',
-        branch: 'emdash/task-a-abc',
+        branch: 'scrawl/task-a-abc',
         path: '/tmp/worktrees/task-a',
         projectId: 'project-1',
         status: 'active',
@@ -140,7 +140,7 @@ describe('worktreeIpc claimReserveAndSaveTask', () => {
         id: 'wt-123',
         projectId: 'project-1',
         name: 'task-a',
-        branch: 'emdash/task-a-abc',
+        branch: 'scrawl/task-a-abc',
         path: '/tmp/worktrees/task-a',
         status: 'idle',
         agentId: 'codex',
@@ -199,7 +199,7 @@ describe('worktreeIpc claimReserveAndSaveTask', () => {
       worktree: {
         id: 'wt-456',
         name: 'task-b',
-        branch: 'emdash/task-b-def',
+        branch: 'scrawl/task-b-def',
         path: '/tmp/worktrees/task-b',
         projectId: 'project-1',
         status: 'active',

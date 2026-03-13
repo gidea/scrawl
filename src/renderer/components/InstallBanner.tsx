@@ -79,7 +79,7 @@ export const InstallBanner: React.FC<Props> = ({
   const showDetails = mode === 'start_failed' && Boolean(details?.trim());
   const isPtyDisabledOrUnavailable =
     mode === 'start_failed' &&
-    (details?.includes('EMDASH_DISABLE_PTY=1') ||
+    (details?.includes('SCRAWL_DISABLE_PTY=1') ||
       details?.toLowerCase().includes('pty unavailable'));
 
   return (
@@ -111,7 +111,7 @@ export const InstallBanner: React.FC<Props> = ({
             <span className="font-medium">Error:</span> {details}
             {isPtyDisabledOrUnavailable ? (
               <div className="mt-1 text-muted-foreground">
-                Embedded terminals are disabled/unavailable. Unset `EMDASH_DISABLE_PTY` (or set it
+                Embedded terminals are disabled/unavailable. Unset `SCRAWL_DISABLE_PTY` (or set it
                 to `0`) and ensure the PTY native module is installed.
               </div>
             ) : null}

@@ -15,20 +15,20 @@ ports:
 required_env: []
 optional_env:
   - TELEMETRY_ENABLED
-  - EMDASH_DB_FILE
-  - EMDASH_DISABLE_NATIVE_DB
-  - EMDASH_DISABLE_CLONE_CACHE
-  - EMDASH_DISABLE_PTY
+  - SCRAWL_DB_FILE
+  - SCRAWL_DISABLE_NATIVE_DB
+  - SCRAWL_DISABLE_CLONE_CACHE
+  - SCRAWL_DISABLE_PTY
   - CODEX_SANDBOX_MODE
   - CODEX_APPROVAL_POLICY
 ---
 
-<!-- Scrawl is a fork of Emdash (https://github.com/generalaction/emdash). -->
+<!-- Scrawl is a fork of Scrawl (https://github.com/generalaction/scrawl). -->
 <!-- Technical details below reflect the inherited codebase. Env var names, file paths, and config names match the current code. -->
 
 # Scrawl
 
-Cross-platform Electron app that orchestrates multiple CLI agents (coding and writing) in parallel. Each agent runs in its own Git worktree for isolation. Also supports remote development over SSH. Forked from [Emdash](https://github.com/generalaction/emdash) and repositioned as an Agentic Writer Environment for copywriters, content writers, proposal writers, and technical writers.
+Cross-platform Electron app that orchestrates multiple CLI agents (coding and writing) in parallel. Each agent runs in its own Git worktree for isolation. Also supports remote development over SSH. Forked from [Scrawl](https://github.com/generalaction/scrawl) and repositioned as an Agentic Writer Environment for copywriters, content writers, proposal writers, and technical writers.
 
 ### Tech Stack
 
@@ -137,8 +137,8 @@ Note: Some IPC handler files are colocated in `services/` (e.g., `worktreeIpc.ts
 
 **Database** (`src/main/db/`):
 - Schema: `schema.ts` — Migrations: `drizzle/` (auto-generated)
-- Locations: macOS `~/Library/Application Support/emdash/emdash.db`, Linux `~/.config/emdash/emdash.db`, Windows `%APPDATA%\emdash\emdash.db`
-- Override with `EMDASH_DB_FILE` env var
+- Locations: macOS `~/Library/Application Support/scrawl/scrawl.db`, Linux `~/.config/scrawl/scrawl.db`, Windows `%APPDATA%\scrawl\scrawl.db`
+- Override with `SCRAWL_DB_FILE` env var
 
 ### Renderer Process (`src/renderer/`)
 
@@ -207,7 +207,7 @@ All 21 CLI agents are defined as `ProviderDefinition` objects. Key fields:
 - `cli` — binary name, `commands` — detection commands (may differ from cli)
 - `autoApproveFlag` — e.g. `--dangerously-skip-permissions` for Claude
 - `initialPromptFlag` — how to pass the initial prompt (`-i`, positional, etc.)
-- `useKeystrokeInjection` — `true` for agents with no CLI prompt flag (Amp, OpenCode); Emdash types the prompt into the TUI after startup
+- `useKeystrokeInjection` — `true` for agents with no CLI prompt flag (Amp, OpenCode); Scrawl types the prompt into the TUI after startup
 - `sessionIdFlag` — only Claude; enables multi-chat session isolation via `--session-id`
 - `resumeFlag` — e.g. `-c -r` for Claude, `--continue` for Kilocode
 
@@ -230,9 +230,9 @@ Three spawn modes:
 
 **WorktreeService** (`src/main/services/WorktreeService.ts`):
 - Creates worktrees at `../worktrees/{slugged-name}-{3-char-hash}` on branch `{prefix}/{slugged-name}-{hash}`
-- Branch prefix defaults to `emdash`, configurable in settings
+- Branch prefix defaults to `scrawl`, configurable in settings
 - Preserves gitignored files (`.env`, `.envrc`, etc.) from main repo to worktree
-- Custom preserve patterns via `.emdash.json` at project root: `{ "preservePatterns": [".claude/**"] }`
+- Custom preserve patterns via `.scrawl.json` at project root: `{ "preservePatterns": [".claude/**"] }`
 
 **WorktreePoolService** (`src/main/services/WorktreePoolService.ts`):
 Eliminates 3-7s worktree creation delay:
@@ -249,7 +249,7 @@ Tasks can have multiple conversation tabs, each with their own provider and PTY.
 
 Implements the [Agent Skills](https://agentskills.io) standard — cross-agent reusable skill packages (`SKILL.md` with YAML frontmatter).
 
-- **Central storage**: `~/.agentskills/{skill-name}/`, metadata in `~/.agentskills/.emdash/`
+- **Central storage**: `~/.agentskills/{skill-name}/`, metadata in `~/.agentskills/.scrawl/`
 - **Agent sync**: Symlinks from central storage into each agent's native directory (`~/.claude/commands/`, `~/.codex/skills/`, etc.)
 - **Aggregated catalog**: Merges from OpenAI repo, Anthropic repo, and local user-created skills
 - **Key files**: `src/shared/skills/` (types, validation, agent targets), `src/main/services/SkillsService.ts` (core logic), `src/main/ipc/skillsIpc.ts`, `src/renderer/components/skills/`, `src/main/services/skills/bundled-catalog.json` (offline fallback)
@@ -259,7 +259,7 @@ Implements the [Agent Skills](https://agentskills.io) standard — cross-agent r
 Orchestrates agents on remote machines over SSH.
 
 - **Connections**: Password, key, or agent auth. Credentials stored via `keytar` in OS keychain.
-- **Remote worktrees**: Created at `<project>/.emdash/worktrees/<task-slug>/` on the server
+- **Remote worktrees**: Created at `<project>/.scrawl/worktrees/<task-slug>/` on the server
 - **Remote PTY**: Agent shells via `ssh2`'s shell API, streaming to UI in real-time
 - **Key files**: `src/main/services/ssh/` (SshService, SshCredentialService, SshHostKeyService), `src/main/services/RemotePtyService.ts`, `src/main/services/RemoteGitService.ts`, `src/main/utils/shellEscape.ts`
 
@@ -271,7 +271,7 @@ Orchestrates agents on remote machines over SSH.
 
 - Schema in `src/main/db/schema.ts` → `pnpm exec drizzle-kit generate` to create migrations
 - Browse: `pnpm exec drizzle-kit studio`
-- Locations: macOS `~/Library/Application Support/emdash/emdash.db`, Linux `~/.config/emdash/emdash.db`, Windows `%APPDATA%\emdash\emdash.db`
+- Locations: macOS `~/Library/Application Support/scrawl/scrawl.db`, Linux `~/.config/scrawl/scrawl.db`, Windows `%APPDATA%\scrawl\scrawl.db`
 - **NEVER** manually edit files in `drizzle/meta/` or numbered SQL migrations
 
 ## Code Style
@@ -284,16 +284,16 @@ Orchestrates agents on remote machines over SSH.
 
 ## Project Configuration
 
-- **`.emdash.json`** at project root: `{ "preservePatterns": [".claude/**"] }` — controls which gitignored files are copied to worktrees. Also supports `shellSetup` for lifecycle scripts.
-- **Branch prefix**: Configurable via app settings (`repository.branchPrefix`), defaults to `emdash`
+- **`.scrawl.json`** at project root: `{ "preservePatterns": [".claude/**"] }` — controls which gitignored files are copied to worktrees. Also supports `shellSetup` for lifecycle scripts.
+- **Branch prefix**: Configurable via app settings (`repository.branchPrefix`), defaults to `scrawl`
 
 ## Environment Variables
 
 All optional:
-- `EMDASH_DB_FILE` — Override database file path
-- `EMDASH_DISABLE_NATIVE_DB` — Disable native SQLite driver
-- `EMDASH_DISABLE_CLONE_CACHE` — Disable clone caching
-- `EMDASH_DISABLE_PTY` — Disable PTY support (used in tests)
+- `SCRAWL_DB_FILE` — Override database file path
+- `SCRAWL_DISABLE_NATIVE_DB` — Disable native SQLite driver
+- `SCRAWL_DISABLE_CLONE_CACHE` — Disable clone caching
+- `SCRAWL_DISABLE_PTY` — Disable PTY support (used in tests)
 - `TELEMETRY_ENABLED` — Toggle anonymous telemetry (PostHog)
 - `CODEX_SANDBOX_MODE` / `CODEX_APPROVAL_POLICY` — Codex agent configuration
 
@@ -336,7 +336,7 @@ All optional:
 ## Key Configuration Files
 
 - `vite.config.ts` — Renderer build + Vitest test config
-- `drizzle.config.ts` — Database migration config (supports `EMDASH_DB_FILE` override)
+- `drizzle.config.ts` — Database migration config (supports `SCRAWL_DB_FILE` override)
 - `tsconfig.json` — Renderer/shared TypeScript config (`module: ESNext`, `noEmit: true` — Vite does compilation)
 - `tsconfig.main.json` — Main process TypeScript config (`module: CommonJS` — required by Electron main)
 - `tailwind.config.js` — Tailwind configuration

@@ -4,15 +4,15 @@ import { buildExternalToolEnv } from '../childProcessEnv';
 describe('buildExternalToolEnv', () => {
   it('removes AppImage-only keys and strips mount paths from PATH-like vars', () => {
     const env = buildExternalToolEnv({
-      APPDIR: '/tmp/.mount_emdashAbCd',
-      APPIMAGE: '/home/user/emdash.AppImage',
+      APPDIR: '/tmp/.mount_scrawlAbCd',
+      APPIMAGE: '/home/user/scrawl.AppImage',
       ARGV0: 'AppRun',
-      CHROME_DESKTOP: 'emdash.desktop',
-      GSETTINGS_SCHEMA_DIR: '/tmp/.mount_emdashAbCd/usr/share/glib-2.0/schemas',
+      CHROME_DESKTOP: 'scrawl.desktop',
+      GSETTINGS_SCHEMA_DIR: '/tmp/.mount_scrawlAbCd/usr/share/glib-2.0/schemas',
       OWD: '/tmp',
-      PATH: '/usr/local/bin:/tmp/.mount_emdashAbCd/usr/bin:/usr/bin',
-      LD_LIBRARY_PATH: '/tmp/.mount_emdashAbCd/usr/lib:/usr/local/cuda/lib64',
-      XDG_DATA_DIRS: '/tmp/.mount_emdashAbCd/usr/share:/usr/share',
+      PATH: '/usr/local/bin:/tmp/.mount_scrawlAbCd/usr/bin:/usr/bin',
+      LD_LIBRARY_PATH: '/tmp/.mount_scrawlAbCd/usr/lib:/usr/local/cuda/lib64',
+      XDG_DATA_DIRS: '/tmp/.mount_scrawlAbCd/usr/share:/usr/share',
       HOME: '/home/user',
       USER: 'user',
       KEEP_ME: 'yes',
@@ -36,9 +36,9 @@ describe('buildExternalToolEnv', () => {
 
   it('removes Python vars only when they point into AppImage mount paths', () => {
     const stripped = buildExternalToolEnv({
-      APPDIR: '/tmp/.mount_emdashZZ',
-      PYTHONHOME: '/tmp/.mount_emdashZZ/usr',
-      PYTHONPATH: '/tmp/.mount_emdashZZ/usr/lib/python3.11',
+      APPDIR: '/tmp/.mount_scrawlZZ',
+      PYTHONHOME: '/tmp/.mount_scrawlZZ/usr',
+      PYTHONPATH: '/tmp/.mount_scrawlZZ/usr/lib/python3.11',
     });
 
     expect(stripped.PYTHONHOME).toBeUndefined();

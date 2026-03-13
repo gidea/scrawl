@@ -120,8 +120,8 @@ const OpenInMenu: React.FC<OpenInMenuProps> = ({
         void callOpen(buttonAppId);
       }
     };
-    window.addEventListener('emdash:open-in-editor', handleOpenInEditorEvent);
-    return () => window.removeEventListener('emdash:open-in-editor', handleOpenInEditorEvent);
+    window.addEventListener('scrawl:open-in-editor', handleOpenInEditorEvent);
+    return () => window.removeEventListener('scrawl:open-in-editor', handleOpenInEditorEvent);
   }, [isActive, buttonAppId, callOpen]);
 
   return (

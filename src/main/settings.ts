@@ -16,7 +16,7 @@ const DEFAULT_PROVIDER_ID: ProviderId = 'claude';
 const IS_MAC = process.platform === 'darwin';
 
 export interface RepositorySettings {
-  branchPrefix: string; // e.g., 'emdash'
+  branchPrefix: string; // e.g., 'scrawl'
   pushOnCreate: boolean;
 }
 
@@ -127,7 +127,7 @@ const TASK_SWITCH_DEFAULTS = getPlatformTaskSwitchDefaults();
 
 const DEFAULT_SETTINGS: AppSettings = {
   repository: {
-    branchPrefix: 'emdash',
+    branchPrefix: 'scrawl',
     pushOnCreate: true,
   },
   projectPrep: {
@@ -151,7 +151,7 @@ const DEFAULT_SETTINGS: AppSettings = {
     autoTrustWorktrees: true,
   },
   projects: {
-    defaultDirectory: join(homedir(), 'emdash-projects'),
+    defaultDirectory: join(homedir(), 'scrawl-projects'),
   },
   keyboard: {
     commandPalette: { key: 'k', modifier: 'cmd' },

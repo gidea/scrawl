@@ -24,10 +24,10 @@ const telemetryCaptureMock = vi.fn();
 const agentEventGetPortMock = vi.fn(() => 12345);
 const agentEventGetTokenMock = vi.fn(() => 'test-hook-token');
 const openCodeGetRemoteConfigDirMock = vi.fn(
-  (ptyId: string) => `$HOME/.config/emdash/agent-hooks/opencode/${ptyId}`
+  (ptyId: string) => `$HOME/.config/scrawl/agent-hooks/opencode/${ptyId}`
 );
 const openCodeGetPluginSourceMock = vi.fn(
-  () => 'export const EmdashNotifyPlugin = async () => ({ event: async () => {} });\n'
+  () => 'export const ScrawlNotifyPlugin = async () => ({ event: async () => {} });\n'
 );
 const clearStoredSessionMock = vi.fn();
 const getStoredResumeTargetMock = vi.fn(() => null);
@@ -281,7 +281,7 @@ vi.mock('../../main/services/ClaudeHookService', () => ({
 }));
 
 vi.mock('../../main/services/OpenCodeHookService', () => ({
-  OPEN_CODE_PLUGIN_FILE: 'emdash-notify.js',
+  OPEN_CODE_PLUGIN_FILE: 'scrawl-notify.js',
   OpenCodeHookService: {
     getRemoteConfigDir: openCodeGetRemoteConfigDirMock,
     getPluginSource: openCodeGetPluginSourceMock,
@@ -703,9 +703,9 @@ describe('ptyIpc notification lifecycle', () => {
     proc!.emitData('user@host:~$ ');
 
     const written = (proc!.write as any).mock.calls.map((c: any[]) => c[0]).join('');
-    expect(written).toContain('export EMDASH_HOOK_PORT=');
-    expect(written).toContain('export EMDASH_HOOK_TOKEN=');
-    expect(written).toContain('export EMDASH_PTY_ID=');
+    expect(written).toContain('export SCRAWL_HOOK_PORT=');
+    expect(written).toContain('export SCRAWL_HOOK_TOKEN=');
+    expect(written).toContain('export SCRAWL_PTY_ID=');
     expect(written).toContain('test-hook-token');
     expect(written).toContain('notify=["sh","-lc","mock-codex-notify","sh"]');
   });
@@ -744,7 +744,7 @@ describe('ptyIpc notification lifecycle', () => {
     proc!.emitData('user@host:~$ ');
 
     const written = (proc!.write as any).mock.calls.map((c: any[]) => c[0]).join('');
-    expect(written).not.toContain('EMDASH_HOOK_PORT=');
+    expect(written).not.toContain('SCRAWL_HOOK_PORT=');
     expect(written).not.toContain('mock-codex-notify');
   });
 
@@ -778,7 +778,7 @@ describe('ptyIpc notification lifecycle', () => {
       (c: any[]) =>
         c[0] === 'ssh' &&
         typeof c[1]?.[c[1].length - 1] === 'string' &&
-        c[1][c[1].length - 1].includes('emdash-notify.js')
+        c[1][c[1].length - 1].includes('scrawl-notify.js')
     );
     expect(pluginWriteCall).toBeDefined();
 
@@ -789,7 +789,7 @@ describe('ptyIpc notification lifecycle', () => {
 
     const written = (proc!.write as any).mock.calls.map((c: any[]) => c[0]).join('');
     expect(written).toContain('export OPENCODE_CONFIG_DIR=');
-    expect(written).toContain(`$HOME/.config/emdash/agent-hooks/opencode/${id}`);
+    expect(written).toContain(`$HOME/.config/scrawl/agent-hooks/opencode/${id}`);
   });
 
   it('writes Claude hook config on remote via ssh exec for claude provider', async () => {

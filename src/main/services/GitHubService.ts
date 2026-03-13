@@ -79,7 +79,7 @@ export interface DeviceCodeResult {
 }
 
 export class GitHubService {
-  private readonly SERVICE_NAME = 'emdash-github';
+  private readonly SERVICE_NAME = 'scrawl-github';
   private readonly ACCOUNT_NAME = 'github-token';
 
   // Polling state management

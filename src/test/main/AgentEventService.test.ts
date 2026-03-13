@@ -83,9 +83,9 @@ function postEvent(
         path: '/hook',
         method: 'POST',
         headers: {
-          'x-emdash-token': token,
-          'x-emdash-pty-id': ptyId,
-          'x-emdash-event-type': type,
+          'x-scrawl-token': token,
+          'x-scrawl-pty-id': ptyId,
+          'x-scrawl-event-type': type,
           'content-type': 'application/json',
           'content-length': Buffer.byteLength(data),
         },
