@@ -290,7 +290,7 @@ export class WorktreePoolService {
   private async transformReserve(reserve: ReserveWorktree, taskName: string): Promise<ClaimResult> {
     const { getAppSettings } = await import('../settings');
     const settings = getAppSettings();
-    const prefix = settings?.repository?.branchPrefix || 'emdash';
+    const prefix = settings?.repository?.branchPrefix || 'scrawl';
 
     // Generate new names
     const sluggedName = this.slugify(taskName);

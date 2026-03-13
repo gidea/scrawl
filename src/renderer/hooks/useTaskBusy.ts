@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { activityStore } from '../lib/activityStore';
 import { rpc } from '../lib/rpc';
 
-const CONVERSATIONS_CHANGED_EVENT = 'emdash:conversations-changed';
+const CONVERSATIONS_CHANGED_EVENT = 'scrawl:conversations-changed';
 
 export function useTaskBusy(taskId: string) {
   const [mainBusy, setMainBusy] = useState(false);

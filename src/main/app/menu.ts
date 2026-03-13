@@ -1,5 +1,5 @@
 import { Menu, shell, app, BrowserWindow } from 'electron';
-import { EMDASH_RELEASES_URL, EMDASH_DOCS_URL } from '@shared/urls';
+import { SCRAWL_RELEASES_URL, SCRAWL_DOCS_URL } from '@shared/urls';
 
 function getFocusedWindow(): BrowserWindow | null {
   return BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0] ?? null;
@@ -119,11 +119,11 @@ export function setupApplicationMenu(): void {
       submenu: [
         {
           label: 'Docs',
-          click: () => shell.openExternal(EMDASH_DOCS_URL),
+          click: () => shell.openExternal(SCRAWL_DOCS_URL),
         },
         {
           label: 'Changelog',
-          click: () => shell.openExternal(EMDASH_RELEASES_URL),
+          click: () => shell.openExternal(SCRAWL_RELEASES_URL),
         },
         ...(!isMac
           ? [

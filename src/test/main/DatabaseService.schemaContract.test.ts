@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../../main/db/path', () => ({
-  resolveDatabasePath: () => '/tmp/emdash-schema-contract-test.db',
+  resolveDatabasePath: () => '/tmp/scrawl-schema-contract-test.db',
   resolveMigrationsPath: () => '/tmp/drizzle',
 }));
 
@@ -21,7 +21,7 @@ describe('DatabaseService schema contract', () => {
   let service: DatabaseService;
 
   beforeEach(() => {
-    delete process.env.EMDASH_DISABLE_NATIVE_DB;
+    delete process.env.SCRAWL_DISABLE_NATIVE_DB;
     service = new DatabaseService();
   });
 
@@ -48,7 +48,7 @@ describe('DatabaseService schema contract', () => {
     await expect((service as any).validateSchemaContract()).rejects.toMatchObject({
       name: 'DatabaseSchemaMismatchError',
       code: 'DB_SCHEMA_MISMATCH',
-      dbPath: '/tmp/emdash-schema-contract-test.db',
+      dbPath: '/tmp/scrawl-schema-contract-test.db',
       missingInvariants: ['projects.base_ref'],
     });
   });

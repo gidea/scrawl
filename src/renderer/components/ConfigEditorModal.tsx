@@ -33,7 +33,7 @@ const EMPTY_SCRIPTS: LifecycleScripts = {
   run: '',
   teardown: '',
 };
-const PROJECT_CONFIG_DOCS_URL = 'https://docs.emdash.sh/project-config';
+const PROJECT_CONFIG_DOCS_URL = 'https://docs.scrawl.sh/project-config';
 
 function ensureConfigObject(raw: unknown): ConfigShape {
   return raw && typeof raw === 'object' && !Array.isArray(raw) ? (raw as ConfigShape) : {};
@@ -179,7 +179,7 @@ export const ConfigEditorModal: React.FC<ConfigEditorModalProps> = ({
       let content: string;
 
       if (isRemote && sshConnectionId) {
-        const configPath = `${projectPath}/.emdash.json`;
+        const configPath = `${projectPath}/.scrawl.json`;
         try {
           content = await window.electronAPI.sshReadFile(sshConnectionId, configPath);
         } catch {
@@ -247,7 +247,7 @@ export const ConfigEditorModal: React.FC<ConfigEditorModalProps> = ({
     setError(null);
     try {
       if (isRemote && sshConnectionId) {
-        const configPath = `${projectPath}/.emdash.json`;
+        const configPath = `${projectPath}/.scrawl.json`;
         await window.electronAPI.sshWriteFile(sshConnectionId, configPath, normalizedConfigContent);
       } else {
         const result = await window.electronAPI.saveProjectConfig(

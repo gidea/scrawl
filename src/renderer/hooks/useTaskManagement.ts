@@ -919,7 +919,9 @@ export function useTaskManagement() {
       autoApprove?: boolean,
       useWorktree: boolean = true,
       baseRef?: string,
-      nameGenerated?: boolean
+      nameGenerated?: boolean,
+      collectionId?: string | null,
+      contentMetadata?: Record<string, unknown>
     ) => {
       const targetProject = pendingTaskProjectRef.current || selectedProject;
       pendingTaskProjectRef.current = null;
@@ -940,6 +942,8 @@ export function useTaskManagement() {
         nameGenerated,
         useWorktree,
         baseRef,
+        collectionId,
+        contentMetadata,
       });
     },
     [selectedProject, createTaskMutation]

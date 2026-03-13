@@ -7,7 +7,7 @@ import { deriveTaskStatus } from '../lib/deriveTaskStatus';
 import { rpc } from '../lib/rpc';
 
 const EMPTY_STATUS = 'unknown' as AgentStatusKind;
-const CONVERSATIONS_CHANGED_EVENT = 'emdash:conversations-changed';
+const CONVERSATIONS_CHANGED_EVENT = 'scrawl:conversations-changed';
 
 export function useTaskStatus(taskId: string): AgentStatusKind {
   const [mainStatus, setMainStatus] = useState<AgentStatusKind>(EMPTY_STATUS);

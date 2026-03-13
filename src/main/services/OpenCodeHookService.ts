@@ -3,7 +3,7 @@ import path from 'path';
 import { app } from 'electron';
 import { log } from '../lib/logger';
 
-export const OPEN_CODE_PLUGIN_FILE = 'emdash-notify.js';
+export const OPEN_CODE_PLUGIN_FILE = 'scrawl-notify.js';
 const OPEN_CODE_IDLE_MESSAGE = 'OpenCode is ready for your input';
 const OPEN_CODE_PERMISSION_MESSAGE = 'OpenCode is waiting for permission';
 
@@ -13,7 +13,7 @@ function sanitizePtySegment(ptyId: string): string {
 
 export class OpenCodeHookService {
   static getRemoteConfigDirRelative(ptyId: string): string {
-    return `.config/emdash/agent-hooks/opencode/${sanitizePtySegment(ptyId)}`;
+    return `.config/scrawl/agent-hooks/opencode/${sanitizePtySegment(ptyId)}`;
   }
 
   static getLocalConfigDir(ptyId: string): string {
@@ -31,23 +31,23 @@ export class OpenCodeHookService {
       `const PERMISSION_MESSAGE = ${JSON.stringify(OPEN_CODE_PERMISSION_MESSAGE)};`,
       '',
       'function getHookUrl() {',
-      '  const port = process.env.EMDASH_HOOK_PORT;',
+      '  const port = process.env.SCRAWL_HOOK_PORT;',
       '  return port ? `http://127.0.0.1:${port}${HOOK_PATH}` : null;',
       '}',
       '',
-      'async function postToEmdash(eventType, payload) {',
+      'async function postToScrawl(eventType, payload) {',
       '  const url = getHookUrl();',
-      '  const token = process.env.EMDASH_HOOK_TOKEN;',
-      '  const ptyId = process.env.EMDASH_PTY_ID;',
+      '  const token = process.env.SCRAWL_HOOK_TOKEN;',
+      '  const ptyId = process.env.SCRAWL_PTY_ID;',
       '  if (!url || !token || !ptyId) return;',
       '  try {',
       '    await fetch(url, {',
       '      method: "POST",',
       '      headers: {',
       '        "Content-Type": "application/json",',
-      '        "X-Emdash-Token": token,',
-      '        "X-Emdash-Pty-Id": ptyId,',
-      '        "X-Emdash-Event-Type": eventType,',
+      '        "X-Scrawl-Token": token,',
+      '        "X-Scrawl-Pty-Id": ptyId,',
+      '        "X-Scrawl-Event-Type": eventType,',
       '      },',
       '      body: JSON.stringify(payload),',
       '    });',
@@ -68,12 +68,12 @@ export class OpenCodeHookService {
       '  return "OpenCode session error";',
       '}',
       '',
-      'export const EmdashNotifyPlugin = async () => ({',
+      'export const ScrawlNotifyPlugin = async () => ({',
       '  event: async ({ event }) => {',
       '    if (!event?.type) return;',
       '',
       '    if (event.type === "permission.asked") {',
-      '      await postToEmdash("notification", {',
+      '      await postToScrawl("notification", {',
       '        notificationType: "permission_prompt",',
       '        message: PERMISSION_MESSAGE,',
       '      });',
@@ -81,7 +81,7 @@ export class OpenCodeHookService {
       '    }',
       '',
       '    if (event.type === "session.idle") {',
-      '      await postToEmdash("notification", {',
+      '      await postToScrawl("notification", {',
       '        notificationType: "idle_prompt",',
       '        message: IDLE_MESSAGE,',
       '      });',
@@ -89,7 +89,7 @@ export class OpenCodeHookService {
       '    }',
       '',
       '    if (event.type === "session.error") {',
-      '      await postToEmdash("error", {',
+      '      await postToScrawl("error", {',
       '        message: pickErrorMessage(event),',
       '      });',
       '    }',

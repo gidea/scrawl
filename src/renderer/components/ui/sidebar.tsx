@@ -42,7 +42,7 @@ interface SidebarProviderProps {
 
 export function SidebarProvider({ defaultOpen = true, children }: SidebarProviderProps) {
   const isMobile = useMediaQuery('(max-width: 1024px)');
-  const storageKey = 'emdash.sidebarOpen';
+  const storageKey = 'scrawl.sidebarOpen';
 
   const [desktopOpen, setDesktopOpen] = React.useState<boolean>(() => {
     if (typeof window === 'undefined') return defaultOpen;

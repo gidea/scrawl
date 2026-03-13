@@ -3,7 +3,7 @@ import path from 'path';
 import { log } from '../lib/logger';
 import type { LifecyclePhase, LifecycleScriptConfig } from '@shared/lifecycle';
 
-export interface EmdashConfig {
+export interface ScrawlConfig {
   preservePatterns?: string[];
   scripts?: LifecycleScriptConfig;
   shellSetup?: string;
@@ -12,22 +12,22 @@ export interface EmdashConfig {
 
 /**
  * Manages lifecycle scripts for worktrees.
- * Scripts are configured in .emdash.json at the project root.
+ * Scripts are configured in .scrawl.json at the project root.
  */
 class LifecycleScriptsService {
   /**
-   * Read .emdash.json config from project root
+   * Read .scrawl.json config from project root
    */
-  readConfig(projectPath: string): EmdashConfig | null {
+  readConfig(projectPath: string): ScrawlConfig | null {
     try {
-      const configPath = path.join(projectPath, '.emdash.json');
+      const configPath = path.join(projectPath, '.scrawl.json');
       if (!fs.existsSync(configPath)) {
         return null;
       }
       const content = fs.readFileSync(configPath, 'utf8');
-      return JSON.parse(content) as EmdashConfig;
+      return JSON.parse(content) as ScrawlConfig;
     } catch (error) {
-      log.warn('Failed to read .emdash.json', { projectPath, error });
+      log.warn('Failed to read .scrawl.json', { projectPath, error });
       return null;
     }
   }
@@ -43,7 +43,7 @@ class LifecycleScriptsService {
   }
 
   /**
-   * Get the shell setup command if configured in .emdash.json.
+   * Get the shell setup command if configured in .scrawl.json.
    * Runs inside every PTY (agent and plain terminal) before the shell starts.
    */
   getShellSetup(projectPath: string): string | null {
@@ -55,7 +55,7 @@ class LifecycleScriptsService {
   }
 
   /**
-   * Check if tmux wrapping is enabled for this project in .emdash.json.
+   * Check if tmux wrapping is enabled for this project in .scrawl.json.
    * When true, agent PTY sessions are wrapped in named tmux sessions
    * for persistence and resumability.
    */

@@ -105,13 +105,13 @@ export class RemoteGitService {
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
     const worktreeName = `${slug || 'task'}-${Date.now()}`;
-    const relWorktreePath = `.emdash/worktrees/${worktreeName}`;
+    const relWorktreePath = `.scrawl/worktrees/${worktreeName}`;
     const worktreePath = `${normalizedProjectPath}/${relWorktreePath}`.replace(/\/+/g, '/');
 
     // Create worktrees directory (relative so we avoid quoting issues)
     await this.sshService.executeCommand(
       connectionId,
-      'mkdir -p .emdash/worktrees',
+      'mkdir -p .scrawl/worktrees',
       normalizedProjectPath
     );
 
@@ -454,24 +454,24 @@ export class RemoteGitService {
         connectionId,
         `s=$(git cat-file -s HEAD:${quoteShellArg(filePath)} 2>/dev/null); ` +
           `if [ "$s" -le ${MAX_DIFF_CONTENT_BYTES} ] 2>/dev/null; then git show HEAD:${quoteShellArg(filePath)}; ` +
-          `else echo "__EMDASH_TOO_LARGE__"; fi`,
+          `else echo "__SCRAWL_TOO_LARGE__"; fi`,
         cwd
       ),
       this.sshService.executeCommand(
         connectionId,
         `s=$(stat -c%s ${quoteShellArg(filePath)} 2>/dev/null || stat -f%z ${quoteShellArg(filePath)} 2>/dev/null); ` +
-          `if [ "$s" -le ${MAX_DIFF_CONTENT_BYTES} ] 2>/dev/null; then cat ${quoteShellArg(filePath)}; else echo "__EMDASH_TOO_LARGE__"; fi`,
+          `if [ "$s" -le ${MAX_DIFF_CONTENT_BYTES} ] 2>/dev/null; then cat ${quoteShellArg(filePath)}; else echo "__SCRAWL_TOO_LARGE__"; fi`,
         cwd
       ),
     ]);
 
     const rawOriginal =
       showResult.exitCode === 0 ? stripTrailingNewline(showResult.stdout) : undefined;
-    const originalContent = rawOriginal === '__EMDASH_TOO_LARGE__' ? undefined : rawOriginal;
+    const originalContent = rawOriginal === '__SCRAWL_TOO_LARGE__' ? undefined : rawOriginal;
 
     const rawModified =
       catResult.exitCode === 0 ? stripTrailingNewline(catResult.stdout) : undefined;
-    const modifiedContent = rawModified === '__EMDASH_TOO_LARGE__' ? undefined : rawModified;
+    const modifiedContent = rawModified === '__SCRAWL_TOO_LARGE__' ? undefined : rawModified;
 
     // Step 4: Return based on what we have
     if (diffLines.length > 0) return { lines: diffLines, originalContent, modifiedContent };

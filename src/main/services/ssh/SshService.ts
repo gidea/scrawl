@@ -262,7 +262,7 @@ export class SshService extends EventEmitter {
               '3. The SSH agent socket path could not be auto-detected\n\n' +
               'Workarounds:\n' +
               '• Add IdentityAgent to this host in ~/.ssh/config (e.g. for 1Password)\n' +
-              '• Launch Emdash from your terminal where SSH agent is already configured\n' +
+              '• Launch Scrawl from your terminal where SSH agent is already configured\n' +
               '• Use SSH key authentication instead of agent authentication\n' +
               '• Ensure your SSH agent is running and your keys are added (ssh-add -l)'
           );

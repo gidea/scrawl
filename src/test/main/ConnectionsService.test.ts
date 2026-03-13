@@ -12,7 +12,7 @@ vi.mock('child_process', () => ({
 }));
 
 vi.mock('electron', () => ({
-  app: { getPath: () => '/tmp/test-emdash' },
+  app: { getPath: () => '/tmp/test-scrawl' },
   BrowserWindow: { getAllWindows: () => [] },
 }));
 

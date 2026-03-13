@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { agentStatusStore } from '../lib/agentStatusStore';
 import { rpc } from '../lib/rpc';
 
-const CONVERSATIONS_CHANGED_EVENT = 'emdash:conversations-changed';
+const CONVERSATIONS_CHANGED_EVENT = 'scrawl:conversations-changed';
 
 export function useTaskUnread(taskId: string): boolean {
   const [mainUnread, setMainUnread] = useState(false);

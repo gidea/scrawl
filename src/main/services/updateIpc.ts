@@ -16,13 +16,13 @@ function getLatestDownloadUrl(): string {
 
   switch (platform) {
     case 'darwin':
-      return `${baseUrl}/emdash-${arch}.dmg`;
+      return `${baseUrl}/scrawl-${arch}.dmg`;
     case 'linux':
       // For Linux, prefer AppImage (more universal)
-      return `${baseUrl}/emdash-x86_64.AppImage`;
+      return `${baseUrl}/scrawl-x86_64.AppImage`;
     case 'win32':
       // For Windows, prefer the installer exe (NSIS)
-      return `${baseUrl}/emdash-x64.exe`;
+      return `${baseUrl}/scrawl-x64.exe`;
     default:
       // Fallback to releases page
       return 'https://github.com/gidea/scrawl/releases/latest';

@@ -24,6 +24,8 @@ export interface CreateTaskParams {
   nameGenerated?: boolean;
   useWorktree: boolean;
   baseRef?: string;
+  collectionId?: string | null;
+  contentMetadata?: Record<string, unknown>;
 }
 
 export interface CreateTaskResult {
@@ -303,6 +305,8 @@ export async function createTask(params: CreateTaskParams): Promise<CreateTaskRe
     nameGenerated,
     useWorktree,
     baseRef,
+    collectionId,
+    contentMetadata,
   } = params;
 
   // Build prompt prefix from linked issues
@@ -356,7 +360,7 @@ export async function createTask(params: CreateTaskParams): Promise<CreateTaskRe
     preparedPrompt = parts.join('\n');
   }
 
-  const taskMetadata: TaskMetadata | null =
+  const hasAnyMetadata =
     linkedLinearIssue ||
     linkedJiraIssue ||
     linkedGithubIssue ||
@@ -365,19 +369,23 @@ export async function createTask(params: CreateTaskParams): Promise<CreateTaskRe
     linkedForgejoIssue ||
     preparedPrompt ||
     autoApprove ||
-    nameGenerated
-      ? {
-          linearIssue: linkedLinearIssue ?? null,
-          jiraIssue: linkedJiraIssue ?? null,
-          githubIssue: linkedGithubIssue ?? null,
-          plainThread: linkedPlainThread ?? null,
-          gitlabIssue: linkedGitlabIssue ?? null,
-          forgejoIssue: linkedForgejoIssue ?? null,
-          initialPrompt: preparedPrompt ?? null,
-          autoApprove: autoApprove ?? null,
-          nameGenerated: nameGenerated ?? null,
-        }
-      : null;
+    nameGenerated ||
+    contentMetadata;
+
+  const taskMetadata: TaskMetadata | null = hasAnyMetadata
+    ? {
+        linearIssue: linkedLinearIssue ?? null,
+        jiraIssue: linkedJiraIssue ?? null,
+        githubIssue: linkedGithubIssue ?? null,
+        plainThread: linkedPlainThread ?? null,
+        gitlabIssue: linkedGitlabIssue ?? null,
+        forgejoIssue: linkedForgejoIssue ?? null,
+        initialPrompt: preparedPrompt ?? null,
+        autoApprove: autoApprove ?? null,
+        nameGenerated: nameGenerated ?? null,
+        ...(contentMetadata || {}),
+      }
+    : null;
 
   const totalRuns = agentRuns.reduce((sum, ar) => sum + ar.runs, 0);
   const isMultiAgent = totalRuns > 1;
@@ -474,6 +482,7 @@ export async function createTask(params: CreateTaskParams): Promise<CreateTaskRe
       agentId: primaryAgent,
       metadata: finalMeta,
       useWorktree,
+      collectionId: collectionId ?? null,
     };
 
     try {
@@ -581,6 +590,7 @@ export async function createTask(params: CreateTaskParams): Promise<CreateTaskRe
     agentId: primaryAgent,
     metadata: taskMetadata,
     useWorktree,
+    collectionId: collectionId ?? null,
   };
 
   if (!taskPersistedInClaim) {

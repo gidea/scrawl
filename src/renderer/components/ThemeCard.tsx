@@ -16,7 +16,7 @@ const ThemeCard: React.FC = () => {
     <div className="grid gap-3">
       <div>
         <div className="text-sm font-medium text-foreground">Color mode</div>
-        <div className="text-sm text-muted-foreground">Choose how Emdash looks.</div>
+        <div className="text-sm text-muted-foreground">Choose how Scrawl looks.</div>
       </div>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(6.5rem,1fr))] gap-2">
         {options.map(({ value, label, icon: Icon }) => (

@@ -136,7 +136,7 @@ const Titlebar: React.FC<TitlebarProps> = ({
   useEffect(() => {
     try {
       const open = Boolean(isFeedbackOpen);
-      window.dispatchEvent(new CustomEvent('emdash:overlay:changed', { detail: { open } }));
+      window.dispatchEvent(new CustomEvent('scrawl:overlay:changed', { detail: { open } }));
     } catch {}
   }, [isFeedbackOpen]);
 

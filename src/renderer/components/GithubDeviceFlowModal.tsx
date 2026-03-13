@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { Spinner } from './ui/spinner';
 import { Check, Copy, ExternalLink, AlertCircle, X } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
-import emdashLogo from '../../assets/images/emdash/emdash_logo_white.svg';
+import scrawlLogo from '../../assets/images/scrawl/scrawl_logo_white.svg';
 import type { BaseModalProps } from '@/contexts/ModalProvider';
 
 interface GithubDeviceFlowModalProps {
@@ -252,7 +252,7 @@ export function GithubDeviceFlowModal({ onClose, onSuccess, onError }: GithubDev
       </button>
 
       <div className="flex flex-col items-center px-8 py-12">
-        <img src={emdashLogo} alt="Emdash" className="mb-8 h-8 opacity-90" />
+        <img src={scrawlLogo} alt="Scrawl" className="mb-8 h-8 opacity-90" />
 
         {success ? (
           // Success State
@@ -296,7 +296,7 @@ export function GithubDeviceFlowModal({ onClose, onSuccess, onError }: GithubDev
             <div className="space-y-2 text-center">
               <h2 className="text-2xl font-semibold">Connect to GitHub</h2>
               <p className="text-sm text-muted-foreground">
-                Follow these steps to authorize Emdash
+                Follow these steps to authorize Scrawl
               </p>
             </div>
 

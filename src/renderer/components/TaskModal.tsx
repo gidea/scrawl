@@ -34,6 +34,10 @@ import { generateTaskNameFromContext } from '../lib/branchNameGenerator';
 import { useProjectManagementContext } from '../contexts/ProjectManagementProvider';
 import { useTaskManagementContext } from '../contexts/TaskManagementContext';
 import { rpc } from '@/lib/rpc';
+import { CollectionSelector } from './content/CollectionSelector';
+import { useContentWorkspace } from '@/hooks/useContentWorkspace';
+import { useCollections } from '@/hooks/useCollections';
+import { createContentWorkflowMetadata } from '@/lib/contentWorkflowStatus';
 
 const DEFAULT_AGENT: Agent = 'claude';
 
@@ -51,6 +55,7 @@ export interface CreateTaskResult {
   useWorktree?: boolean;
   baseRef?: string;
   nameGenerated?: boolean;
+  collectionId?: string | null;
 }
 
 interface TaskModalProps {
@@ -68,7 +73,9 @@ interface TaskModalProps {
     autoApprove?: boolean,
     useWorktree?: boolean,
     baseRef?: string,
-    nameGenerated?: boolean
+    nameGenerated?: boolean,
+    collectionId?: string | null,
+    contentMetadata?: Record<string, unknown>
   ) => Promise<void>;
 }
 
@@ -93,7 +100,9 @@ export function TaskModalOverlay({ onClose }: TaskModalOverlayProps) {
         autoApprove,
         useWorktree,
         baseRef,
-        nameGenerated
+        nameGenerated,
+        collectionId,
+        contentMetadata
       ) => {
         await handleCreateTask(
           name,
@@ -108,7 +117,9 @@ export function TaskModalOverlay({ onClose }: TaskModalOverlayProps) {
           autoApprove,
           useWorktree,
           baseRef,
-          nameGenerated
+          nameGenerated,
+          collectionId,
+          contentMetadata
         );
       }}
     />
@@ -128,6 +139,32 @@ const TaskModal: React.FC<TaskModalProps> = ({ onClose, onCreateTask }) => {
   const projectName = selectedProject?.name || '';
   const existingNames = (selectedProject?.tasks || []).map((w) => w.name);
   const projectPath = selectedProject?.path;
+
+  // Collections
+  const { workspaces, activeWorkspace, createWorkspace } = useContentWorkspace(selectedProject?.id);
+  const { collections, createCollection } = useCollections(activeWorkspace?.id);
+  const [selectedCollectionId, setSelectedCollectionId] = useState<string | null>(null);
+
+  const handleEnsureWorkspaceAndCreate = useCallback(
+    async (name: string, description?: string) => {
+      let wsId = activeWorkspace?.id;
+      if (!wsId) {
+        const ws = await createWorkspace('Default');
+        wsId = ws?.id;
+      }
+      if (!wsId) return null;
+      return createCollection(name, description);
+    },
+    [activeWorkspace, createWorkspace, createCollection]
+  );
+
+  const handleUploadDocuments = useCallback(
+    async (collectionId: string, files: Array<{ name: string; content: string }>) => {
+      await window.electronAPI.contentKnowledgeUpload({ collectionId, documents: files });
+    },
+    []
+  );
+
   // Form state
   const [taskName, setTaskName] = useState('');
   const [agentRuns, setAgentRuns] = useState<AgentRun[]>([{ agent: DEFAULT_AGENT, runs: 1 }]);
@@ -381,6 +418,10 @@ const TaskModal: React.FC<TaskModalProps> = ({ onClose, onCreateTask }) => {
     setIsCreating(true);
 
     try {
+      const contentMeta = selectedCollectionId
+        ? { contentWorkflow: createContentWorkflowMetadata('backlog', selectedCollectionId) }
+        : undefined;
+
       await onCreateTask(
         finalName,
         hasInitialPromptSupport && initialPrompt.trim() ? initialPrompt.trim() : undefined,
@@ -394,7 +435,9 @@ const TaskModal: React.FC<TaskModalProps> = ({ onClose, onCreateTask }) => {
         hasAutoApproveSupport ? autoApprove : false,
         useWorktree,
         selectedBranch,
-        isNameGenerated
+        isNameGenerated,
+        selectedCollectionId,
+        contentMeta
       );
       onClose();
     } catch (error) {
@@ -465,6 +508,18 @@ const TaskModal: React.FC<TaskModalProps> = ({ onClose, onCreateTask }) => {
               maxLength={MAX_TASK_NAME_LENGTH}
               className={`w-full ${touched && error && !isFocused ? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive' : ''}`}
               aria-invalid={touched && !!error && !isFocused}
+            />
+          </div>
+
+          <div>
+            <Label className="mb-2 block">Collection (optional)</Label>
+            <CollectionSelector
+              workspaceId={activeWorkspace?.id ?? null}
+              collections={collections}
+              selectedCollectionId={selectedCollectionId}
+              onSelect={setSelectedCollectionId}
+              onCreateCollection={handleEnsureWorkspaceAndCreate}
+              onUploadDocuments={handleUploadDocuments}
             />
           </div>
 

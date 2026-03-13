@@ -190,7 +190,7 @@ export const MultiAgentDropdown: React.FC<MultiAgentDropdownProps> = ({
                               Run up to {MAX_RUNS} instances of this agent to compare different
                               solutions.{' '}
                               <a
-                                href="https://docs.emdash.sh/best-of-n"
+                                href="https://docs.scrawl.sh/best-of-n"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-0.5 underline hover:opacity-70"

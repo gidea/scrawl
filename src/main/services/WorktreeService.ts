@@ -53,8 +53,8 @@ const DEFAULT_EXCLUDE_PATTERNS = [
   'venv',
 ];
 
-/** Project-level config stored in .emdash.json */
-interface EmdashConfig {
+/** Project-level config stored in .scrawl.json */
+interface ScrawlConfig {
   preservePatterns?: string[];
 }
 
@@ -114,16 +114,16 @@ export class WorktreeService {
   }
 
   /**
-   * Read .emdash.json config from project root
+   * Read .scrawl.json config from project root
    */
-  private readProjectConfig(projectPath: string): EmdashConfig | null {
+  private readProjectConfig(projectPath: string): ScrawlConfig | null {
     try {
-      const configPath = path.join(projectPath, '.emdash.json');
+      const configPath = path.join(projectPath, '.scrawl.json');
       if (!fs.existsSync(configPath)) {
         return null;
       }
       const content = fs.readFileSync(configPath, 'utf8');
-      return JSON.parse(content) as EmdashConfig;
+      return JSON.parse(content) as ScrawlConfig;
     } catch {
       return null;
     }
@@ -191,7 +191,7 @@ export class WorktreeService {
     try {
       const { getAppSettings } = await import('../settings');
       const settings = getAppSettings();
-      const prefix = settings?.repository?.branchPrefix || 'emdash';
+      const prefix = settings?.repository?.branchPrefix || 'scrawl';
       branchName = this.sanitizeBranchName(`${prefix}/${sluggedName}-${hash}`);
       worktreePath = path.join(projectPath, '..', `worktrees/${sluggedName}-${hash}`);
       const worktreeId = this.stableIdFromPath(worktreePath);
@@ -329,7 +329,7 @@ export class WorktreeService {
       const worktrees: WorktreeInfo[] = [];
       const lines = stdout.trim().split('\n');
       // Compute managed prefixes based on configured prefix
-      let managedPrefixes: string[] = ['emdash', 'agent', 'pr', 'orch'];
+      let managedPrefixes: string[] = ['scrawl', 'agent', 'pr', 'orch'];
       try {
         const { getAppSettings } = await import('../settings');
         const settings = getAppSettings();
@@ -395,7 +395,7 @@ export class WorktreeService {
       .replace(/\/+/g, '/');
     n = n.replace(/^[./-]+/, '').replace(/[./-]+$/, '');
     if (!n || n === 'HEAD') {
-      n = `emdash/${this.slugify('task')}-${this.generateShortHash()}`;
+      n = `scrawl/${this.slugify('task')}-${this.generateShortHash()}`;
     }
     return n;
   }
@@ -701,7 +701,7 @@ export class WorktreeService {
     const settings = await projectSettingsService.getProjectSettings(projectId);
     if (!settings) {
       throw new Error(
-        'Project settings not found. Please re-open the project in Emdash and try again.'
+        'Project settings not found. Please re-open the project in Scrawl and try again.'
       );
     }
 

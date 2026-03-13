@@ -164,7 +164,7 @@ let sessionStartMs: number = Date.now();
 let lastActiveDate: string | undefined;
 let cachedGithubUsername: string | null = null;
 
-const libName = 'emdash';
+const libName = 'scrawl';
 
 function getVersionSafe(): string {
   try {

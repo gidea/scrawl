@@ -100,7 +100,7 @@ class AutoUpdateService {
       for (const path of possiblePaths) {
         try {
           const packageJson = JSON.parse(readFileSync(path, 'utf-8'));
-          if (packageJson.name === 'emdash' && packageJson.version) {
+          if (packageJson.name === 'scrawl' && packageJson.version) {
             return packageJson.version;
           }
         } catch {
@@ -272,17 +272,17 @@ class AutoUpdateService {
   private async loadSettings(): Promise<void> {
     try {
       // Load from environment variables (settings persist in memory during session)
-      const envChannel = process.env.EMDASH_UPDATE_CHANNEL;
+      const envChannel = process.env.SCRAWL_UPDATE_CHANNEL;
       if (envChannel && Object.values(UpdateChannel).includes(envChannel as UpdateChannel)) {
         this.settings.channel = envChannel as UpdateChannel;
       }
 
-      const envAutoCheck = process.env.EMDASH_AUTO_CHECK_UPDATES;
+      const envAutoCheck = process.env.SCRAWL_AUTO_CHECK_UPDATES;
       if (envAutoCheck === 'false') {
         this.settings.autoCheck = false;
       }
 
-      const envAutoDownload = process.env.EMDASH_AUTO_DOWNLOAD_UPDATES;
+      const envAutoDownload = process.env.SCRAWL_AUTO_DOWNLOAD_UPDATES;
       if (envAutoDownload === 'true') {
         this.settings.autoDownload = true;
       }

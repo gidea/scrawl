@@ -142,7 +142,7 @@ export function registerGithubIpc() {
     const q = (s: string) => JSON.stringify(s);
     try {
       // Opt-out flag for safety or debugging
-      if (process.env.EMDASH_DISABLE_CLONE_CACHE === '1') {
+      if (process.env.SCRAWL_DISABLE_CLONE_CACHE === '1') {
         await execAsync(`git clone ${q(repoUrl)} ${q(localPath)}`);
         return { success: true };
       }
@@ -561,7 +561,7 @@ export function registerGithubIpc() {
         const { getAppSettings } = await import('../settings');
         const settings = getAppSettings();
         const projectDir =
-          settings.projects?.defaultDirectory || path.join(homedir(), 'emdash-projects');
+          settings.projects?.defaultDirectory || path.join(homedir(), 'scrawl-projects');
 
         // Ensure project directory exists
         if (!fs.existsSync(projectDir)) {

@@ -251,17 +251,17 @@ export function registerSshIpc() {
             const identityAgent = await resolveIdentityAgent(config.host);
             connectConfig.agent = identityAgent || process.env.SSH_AUTH_SOCK;
             debugLogs.push(
-              `[emdash] authType=agent, socket=${connectConfig.agent ?? '(not found)'}`
+              `[scrawl] authType=agent, socket=${connectConfig.agent ?? '(not found)'}`
             );
           }
 
           debugLogs.push(
-            `[emdash] authType=${config.authType}, host=${config.host}, port=${config.port}, username=${config.username}`
+            `[scrawl] authType=${config.authType}, host=${config.host}, port=${config.port}, username=${config.username}`
           );
 
           // Check for ProxyCommand in ~/.ssh/config
           const proxyCommand = await resolveProxyCommand(config.host, config.port);
-          debugLogs.push(`[emdash] ProxyCommand resolve: ${proxyCommand ?? '(none)'}`);
+          debugLogs.push(`[scrawl] ProxyCommand resolve: ${proxyCommand ?? '(none)'}`);
           let proxyProc: import('child_process').ChildProcess | undefined;
           if (proxyCommand) {
             const { Duplex } = await import('stream');
@@ -281,10 +281,10 @@ export function registerSshIpc() {
             proxyProc.stdout!.on('data', (data) => sock.push(data));
             proxyProc.stdout!.on('close', () => sock.push(null));
             proxyProc.stderr!.on('data', (data) => {
-              debugLogs.push(`[emdash] proxy stderr: ${data.toString()}`);
+              debugLogs.push(`[scrawl] proxy stderr: ${data.toString()}`);
             });
             proxyProc.on('error', (err) => {
-              debugLogs.push(`[emdash] proxy error: ${err.message}`);
+              debugLogs.push(`[scrawl] proxy error: ${err.message}`);
               sock.destroy(err);
             });
             (connectConfig as any).sock = sock;

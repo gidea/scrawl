@@ -45,7 +45,7 @@ interface GraphQLResponse<T> {
 }
 
 export class PlainService {
-  private readonly SERVICE_NAME = 'emdash-plain';
+  private readonly SERVICE_NAME = 'scrawl-plain';
   private readonly ACCOUNT_NAME = 'api-token';
 
   async saveToken(

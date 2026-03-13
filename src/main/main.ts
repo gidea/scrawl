@@ -128,7 +128,7 @@ import { join } from 'path';
 import { rmSync } from 'node:fs';
 
 // Set app name for macOS dock and menu bar
-app.setName('Emdash');
+app.setName('Scrawl');
 
 // Prevent multiple instances in production (e.g. user clicks icon while auto-updater is restarting).
 // Skip in dev so dev server can run alongside the packaged app.
@@ -161,7 +161,7 @@ if (process.platform === 'darwin' && !app.isPackaged) {
     'src',
     'assets',
     'images',
-    'emdash',
+    'scrawl',
     'icon-dock.png'
   );
   try {
@@ -199,14 +199,14 @@ app.whenReady().then(async () => {
       const result = await dialog.showMessageBox({
         type: 'error',
         title: 'Local Data Reset Required',
-        message: 'Emdash cannot start because your local database schema is incompatible.',
+        message: 'Scrawl cannot start because your local database schema is incompatible.',
         detail: [
           'Required schema entries are missing:',
           missing || '• unknown invariant',
           '',
           `Database path: ${err.dbPath}`,
           '',
-          'Choose "Reset Local Data and Relaunch" to delete local Emdash data and start fresh.',
+          'Choose "Reset Local Data and Relaunch" to delete local Scrawl data and start fresh.',
           'This only removes local app data (projects, tasks, conversations). Repository files are not deleted.',
         ].join('\n'),
         buttons: ['Reset Local Data and Relaunch', 'Quit'],
@@ -243,7 +243,7 @@ app.whenReady().then(async () => {
           '• Homebrew installation issues (try direct download)\n' +
           '• Incomplete installation\n\n' +
           'Please try:\n' +
-          '1. Move Emdash to Applications folder\n' +
+          '1. Move Scrawl to Applications folder\n' +
           '2. Download directly from GitHub releases\n' +
           '3. Check console for detailed error information'
       );

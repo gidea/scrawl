@@ -389,7 +389,7 @@ function buildRemoteInitKeystrokes(args: {
   if (args.provider) {
     const cli = args.provider.cli;
     const install = args.provider.installCommand ? ` Install: ${args.provider.installCommand}` : '';
-    const msg = `emdash: ${cli} not found on remote.${install}`;
+    const msg = `scrawl: ${cli} not found on remote.${install}`;
     const providerCmd = args.provider.cmd;
 
     if (args.tmux) {
@@ -397,7 +397,7 @@ function buildRemoteInitKeystrokes(args: {
       // tmux new-session -As creates-or-attaches in one command.
       // Falls back to running without tmux if tmux isn't installed on the remote.
       const tmuxName = quoteShellArg(args.tmux.sessionName);
-      const shScript = `if command -v ${quoteShellArg(cli)} >/dev/null 2>&1; then if command -v tmux >/dev/null 2>&1; then exec tmux new-session -As ${tmuxName} -- sh -c ${quoteShellArg(providerCmd)}; else printf '%s\\n' 'emdash: tmux not found on remote, running without session persistence'; exec ${providerCmd}; fi; else printf '%s\\n' ${quoteShellArg(
+      const shScript = `if command -v ${quoteShellArg(cli)} >/dev/null 2>&1; then if command -v tmux >/dev/null 2>&1; then exec tmux new-session -As ${tmuxName} -- sh -c ${quoteShellArg(providerCmd)}; else printf '%s\\n' 'scrawl: tmux not found on remote, running without session persistence'; exec ${providerCmd}; fi; else printf '%s\\n' ${quoteShellArg(
         msg
       )}; fi`;
       lines.push(`sh -ilc ${quoteShellArg(shScript)}`);
@@ -534,10 +534,10 @@ function execFileAsync(cmd: string, args: string[]): Promise<{ stdout: string; s
 }
 
 async function resolveShellSetup(cwd: string): Promise<string | undefined> {
-  // Committed .emdash.json lives in the worktree itself
+  // Committed .scrawl.json lives in the worktree itself
   const fromCwd = lifecycleScriptsService.getShellSetup(cwd);
   if (fromCwd) return fromCwd;
-  // Uncommitted .emdash.json only exists in the project root — look it up via DB
+  // Uncommitted .scrawl.json only exists in the project root — look it up via DB
   try {
     const task = await databaseService.getTaskByPath(cwd);
     const project = task ? await databaseService.getProjectById(task.projectId) : null;
@@ -623,8 +623,8 @@ export function registerPtyIpc(): void {
       }
     ) => {
       const ptyStartTime = performance.now();
-      if (process.env.EMDASH_DISABLE_PTY === '1') {
-        return { ok: false, error: 'PTY disabled via EMDASH_DISABLE_PTY=1' };
+      if (process.env.SCRAWL_DISABLE_PTY === '1') {
+        return { ok: false, error: 'PTY disabled via SCRAWL_DISABLE_PTY=1' };
       }
       try {
         const { id, cwd, remote, shell, env, cols, rows, autoApprove, initialPrompt, skipResume } =
@@ -1054,7 +1054,7 @@ export function registerPtyIpc(): void {
       try {
         const ssh = await resolveSshInvocation(args.connectionId);
         const scpArgs = buildScpArgs(ssh.args);
-        const remoteDir = '/tmp/emdash-images';
+        const remoteDir = '/tmp/scrawl-images';
 
         // Ensure remote directory exists
         await execFileAsync('ssh', [...ssh.args, ssh.target, `mkdir -p ${remoteDir}`]);
@@ -1099,8 +1099,8 @@ export function registerPtyIpc(): void {
         resume?: boolean;
       }
     ) => {
-      if (process.env.EMDASH_DISABLE_PTY === '1') {
-        return { ok: false, error: 'PTY disabled via EMDASH_DISABLE_PTY=1' };
+      if (process.env.SCRAWL_DISABLE_PTY === '1') {
+        return { ok: false, error: 'PTY disabled via SCRAWL_DISABLE_PTY=1' };
       }
 
       try {
@@ -1173,9 +1173,9 @@ export function registerPtyIpc(): void {
             ssh.args.push('-R', `127.0.0.1:${remotePort}:127.0.0.1:${hookPort}`);
 
             preProviderCommands.push(
-              `export EMDASH_HOOK_PORT=${quoteShellArg(String(remotePort))}`,
-              `export EMDASH_HOOK_TOKEN=${quoteShellArg(agentEventService.getToken())}`,
-              `export EMDASH_PTY_ID=${quoteShellArg(id)}`
+              `export SCRAWL_HOOK_PORT=${quoteShellArg(String(remotePort))}`,
+              `export SCRAWL_HOOK_TOKEN=${quoteShellArg(agentEventService.getToken())}`,
+              `export SCRAWL_PTY_ID=${quoteShellArg(id)}`
             );
           }
 
@@ -1260,7 +1260,7 @@ export function registerPtyIpc(): void {
         const tmux = await resolveTmuxEnabled(cwd);
         const codexBindingStartedAt = providerId === 'codex' ? Date.now() : 0;
 
-        // Write Claude Code hook config so it calls back to Emdash on events
+        // Write Claude Code hook config so it calls back to Scrawl on events
         if (providerId === 'claude') {
           try {
             ClaudeHookService.writeHookConfig(cwd);

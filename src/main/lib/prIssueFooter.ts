@@ -1,8 +1,8 @@
-const START_MARKER = '<!-- emdash-issue-footer:start -->';
-const END_MARKER = '<!-- emdash-issue-footer:end -->';
+const START_MARKER = '<!-- scrawl-issue-footer:start -->';
+const END_MARKER = '<!-- scrawl-issue-footer:end -->';
 
 const ISSUE_FOOTER_BLOCK_RE =
-  /\n?<!-- emdash-issue-footer:start -->[\s\S]*?<!-- emdash-issue-footer:end -->\n?/g;
+  /\n?<!-- scrawl-issue-footer:start -->[\s\S]*?<!-- scrawl-issue-footer:end -->\n?/g;
 
 function stripInjectedIssueFooter(body: string): string {
   return body.replace(ISSUE_FOOTER_BLOCK_RE, '').trimEnd();

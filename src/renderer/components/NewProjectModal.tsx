@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
 import { DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Input } from './ui/input';
@@ -7,6 +7,9 @@ import { Label } from './ui/label';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Spinner } from './ui/spinner';
 import { Separator } from './ui/separator';
+import { Textarea } from './ui/textarea';
+import { Upload, X } from 'lucide-react';
+import { rpc } from '@/lib/rpc';
 
 interface NewProjectModalProps {
   onClose: () => void;
@@ -31,6 +34,15 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({ onClose, onSuc
   const [progress, setProgress] = useState<string>('');
   const [touched, setTouched] = useState(false);
   const validationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Step 2: brand upload
+  const [step, setStep] = useState<'create' | 'brand'>('create');
+  const [createdProjectPath, setCreatedProjectPath] = useState('');
+  const [brandName, setBrandName] = useState('Brand Guidelines');
+  const [brandContent, setBrandContent] = useState('');
+  const [brandFileName, setBrandFileName] = useState('');
+  const [isSavingBrand, setIsSavingBrand] = useState(false);
+  const brandFileInputRef = useRef<HTMLInputElement>(null);
 
   // Load owners on mount
   useEffect(() => {
@@ -139,11 +151,10 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({ onClose, onSuc
         });
 
         if (result.success && result.projectPath) {
-          setProgress('Repository created successfully! Adding to workspace...');
-          // Brief delay to show success message
-          await new Promise((resolve) => setTimeout(resolve, 500));
-          onSuccess(result.projectPath);
-          onClose();
+          setProgress('Repository created successfully!');
+          setCreatedProjectPath(result.projectPath);
+          setIsCreating(false);
+          setStep('brand');
         } else {
           let errorMessage = result.error || 'Failed to create project';
           if (result.githubRepoCreated && result.repoUrl) {
@@ -162,6 +173,52 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({ onClose, onSuc
     [repoName, description, owner, isPrivate, validationError, onSuccess, onClose]
   );
 
+  const handleBrandFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const content = await file.text();
+    setBrandContent(content);
+    setBrandFileName(file.name);
+    if (brandFileInputRef.current) brandFileInputRef.current.value = '';
+  }, []);
+
+  const handleSkipBrand = useCallback(() => {
+    onSuccess(createdProjectPath);
+    onClose();
+  }, [createdProjectPath, onSuccess, onClose]);
+
+  const handleSaveBrand = useCallback(async () => {
+    setIsSavingBrand(true);
+    try {
+      // Ensure project is saved to DB first
+      onSuccess(createdProjectPath);
+      // Give handleNewProjectSuccess time to save the project
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      // Find the newly created project by path
+      const projects = await rpc.db.getProjects();
+      const project = projects.find((p) => p.path === createdProjectPath);
+      if (project) {
+        const wsResult = await window.electronAPI.contentWorkspaceCreate({
+          projectId: project.id,
+          name: 'Default',
+        });
+        if (wsResult.success && wsResult.data) {
+          await window.electronAPI.contentBrandCreate({
+            workspaceId: wsResult.data.id,
+            name: brandName.trim() || 'Brand Guidelines',
+            content: brandContent,
+            isActive: true,
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Failed to save brand:', err);
+    } finally {
+      setIsSavingBrand(false);
+      onClose();
+    }
+  }, [createdProjectPath, brandName, brandContent, onSuccess, onClose]);
+
   return (
     <DialogContent
       className="max-w-md"
@@ -173,12 +230,108 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({ onClose, onSuc
       }}
     >
       <DialogHeader>
-        <DialogTitle>New Project</DialogTitle>
+        <DialogTitle>{step === 'brand' ? 'Add Brand Document' : 'New Project'}</DialogTitle>
       </DialogHeader>
 
       <Separator />
 
-      {isCreating && progress ? (
+      {step === 'brand' ? (
+        <div className="space-y-4 py-2">
+          <p className="text-sm text-muted-foreground">
+            Optionally add a brand document to guide your agents' voice and style.
+          </p>
+
+          <div>
+            <Label htmlFor="brand-name" className="mb-2 block">
+              Document name
+            </Label>
+            <Input
+              id="brand-name"
+              value={brandName}
+              onChange={(e) => setBrandName(e.target.value)}
+              placeholder="Brand Guidelines"
+              disabled={isSavingBrand}
+            />
+          </div>
+
+          <div>
+            <Label className="mb-2 block">Upload a .md file</Label>
+            <input
+              ref={brandFileInputRef}
+              type="file"
+              accept=".md,.txt,.markdown"
+              className="hidden"
+              onChange={handleBrandFileSelect}
+            />
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => brandFileInputRef.current?.click()}
+                disabled={isSavingBrand}
+              >
+                <Upload className="mr-2 h-4 w-4" />
+                Choose file
+              </Button>
+              {brandFileName && (
+                <div className="flex items-center gap-1 rounded bg-muted px-2 py-1 text-xs">
+                  <span className="max-w-[160px] truncate">{brandFileName}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBrandFileName('');
+                      setBrandContent('');
+                    }}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="brand-content" className="mb-2 block">
+              Or paste content
+            </Label>
+            <Textarea
+              id="brand-content"
+              value={brandContent}
+              onChange={(e) => setBrandContent(e.target.value)}
+              placeholder="# Brand Guidelines&#10;&#10;Write your brand voice, tone, and style guidelines here..."
+              rows={6}
+              disabled={isSavingBrand}
+            />
+          </div>
+
+          <div className="flex justify-end gap-2 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleSkipBrand}
+              disabled={isSavingBrand}
+            >
+              Skip
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSaveBrand}
+              disabled={!brandContent.trim() || isSavingBrand}
+            >
+              {isSavingBrand ? (
+                <>
+                  <Spinner size="sm" className="mr-2" />
+                  Saving...
+                </>
+              ) : (
+                'Save Brand Document'
+              )}
+            </Button>
+          </div>
+        </div>
+      ) : isCreating && progress ? (
         <div className="space-y-4 py-4">
           <div className="flex items-center gap-3">
             <Spinner size="sm" />

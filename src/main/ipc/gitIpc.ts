@@ -262,7 +262,7 @@ export function registerGitIpc() {
     }
 
     // Unstage plan mode artifacts
-    await remoteGitService.execGit(connectionId, taskPath, 'reset -q .emdash 2>/dev/null || true');
+    await remoteGitService.execGit(connectionId, taskPath, 'reset -q .scrawl 2>/dev/null || true');
     await remoteGitService.execGit(
       connectionId,
       taskPath,
@@ -1981,7 +1981,7 @@ current branch '${currentBranch}' ahead of base '${baseRef}'.`,
 
           // Never commit plan mode artifacts
           try {
-            await execAsync('git reset -q .emdash || true', { cwd: taskPath });
+            await execAsync('git reset -q .scrawl || true', { cwd: taskPath });
           } catch {}
           try {
             await execAsync('git reset -q PLANNING.md || true', { cwd: taskPath });

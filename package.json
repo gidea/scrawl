@@ -1,5 +1,5 @@
 {
-  "name": "emdash",
+  "name": "scrawl",
   "version": "0.4.29",
   "description": "A cross-platform Electron app that orchestrates multiple coding agents in parallel",
   "main": "dist/main/main/entry.js",
@@ -37,8 +37,8 @@
     "openai"
   ],
   "author": {
-    "name": "Emdash Contributors",
-    "email": "support@emdash.sh"
+    "name": "Scrawl Contributors",
+    "email": "support@scrawl.sh"
   },
   "engines": {
     "node": ">=20.0.0 <23.0.0",
@@ -140,12 +140,12 @@
     "tsconfig-paths": "^3.15.0"
   },
   "build": {
-    "appId": "com.emdash",
-    "productName": "Emdash",
+    "appId": "com.scrawl",
+    "productName": "Scrawl",
     "directories": {
       "output": "release"
     },
-    "artifactName": "emdash-${arch}.${ext}",
+    "artifactName": "scrawl-${arch}.${ext}",
     "publish": [
       {
         "provider": "github",
@@ -185,11 +185,11 @@
           ]
         }
       ],
-      "icon": "src/assets/images/emdash/emdash.icns",
+      "icon": "src/assets/images/scrawl/scrawl.icns",
       "notarize": false
     },
     "dmg": {
-      "icon": "src/assets/images/emdash/emdash.icns"
+      "icon": "src/assets/images/scrawl/scrawl.icns"
     },
     "linux": {
       "category": "Development",
@@ -215,7 +215,7 @@
       ]
     },
     "win": {
-      "icon": "src/assets/images/emdash/icon-light.png",
+      "icon": "src/assets/images/scrawl/icon-light.png",
       "target": [
         {
           "target": "nsis",
@@ -233,8 +233,8 @@
       "azureSignOptions": {
         "publisherName": "General Action, Inc.",
         "endpoint": "https://eus.codesigning.azure.net/",
-        "certificateProfileName": "emdash-public",
-        "codeSigningAccountName": "emdash"
+        "certificateProfileName": "scrawl-public",
+        "codeSigningAccountName": "scrawl"
       }
     },
     "msi": {

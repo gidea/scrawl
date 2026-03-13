@@ -1,6 +1,6 @@
 # Contributing to Scrawl
 
-Thanks for your interest in contributing. Scrawl is a fork of [Emdash](https://github.com/generalaction/emdash), an Agentic Development Environment built by the team at [generalaction](https://github.com/generalaction). We're deeply grateful for their creativity and open source work — Scrawl would not exist without it.
+Thanks for your interest in contributing. Scrawl is a fork of [Scrawl](https://github.com/generalaction/scrawl), an Agentic Development Environment built by the team at [generalaction](https://github.com/generalaction). We're deeply grateful for their creativity and open source work — Scrawl would not exist without it.
 
 Scrawl repositions that foundation as an **Agentic Writer Environment (AWE)**: the same parallel, isolated, worktree-based workflow applied to written content creation, built for copywriters, content writers, proposal writers, and technical writers.
 
@@ -159,9 +159,9 @@ feat(skills): add style-guide skill template for writers
 
 **Local DB (SQLite)**
 
-- macOS: `~/Library/Application Support/emdash/emdash.db`
-- Linux: `~/.config/emdash/emdash.db`
-- Windows: `%APPDATA%\emdash\emdash.db`
+- macOS: `~/Library/Application Support/scrawl/scrawl.db`
+- Linux: `~/.config/scrawl/scrawl.db`
+- Windows: `%APPDATA%\scrawl\scrawl.db`
 - Reset: quit the app, delete the file, relaunch (schema recreates automatically).
 
 ---

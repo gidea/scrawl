@@ -13,7 +13,8 @@ import { TaskStatusIndicator } from './TaskStatusIndicator';
 import TaskContextBadges from './TaskContextBadges';
 import { useConversationStatus } from '../hooks/useConversationStatus';
 import { useStatusUnread } from '../hooks/useStatusUnread';
-import { useInitialPromptInjection } from '../hooks/useInitialPromptInjection';
+import { useContentAwarePromptInjection } from '../hooks/useContentAwarePromptInjection';
+import { hasContentWorkflow, enhancePromptFromTaskMetadata } from '../lib/contentPromptEnhancer';
 import { useTaskComments } from '../hooks/useLineComments';
 import { type Agent } from '../types';
 import { Task } from '../types/chat';
@@ -596,7 +597,7 @@ const ChatInterface: React.FC<Props> = ({
         setAgent(newAgent as Agent);
         try {
           window.dispatchEvent(
-            new CustomEvent('emdash:conversations-changed', { detail: { taskId: task.id } })
+            new CustomEvent('scrawl:conversations-changed', { detail: { taskId: task.id } })
           );
         } catch {}
       } catch (error) {
@@ -673,7 +674,7 @@ const ChatInterface: React.FC<Props> = ({
 
       try {
         window.dispatchEvent(
-          new CustomEvent('emdash:conversations-changed', { detail: { taskId: task.id } })
+          new CustomEvent('scrawl:conversations-changed', { detail: { taskId: task.id } })
         );
       } catch {}
     },
@@ -808,9 +809,9 @@ const ChatInterface: React.FC<Props> = ({
       }
     };
 
-    window.addEventListener('emdash:switch-agent', handleAgentSwitch);
+    window.addEventListener('scrawl:switch-agent', handleAgentSwitch);
     return () => {
-      window.removeEventListener('emdash:switch-agent', handleAgentSwitch);
+      window.removeEventListener('scrawl:switch-agent', handleAgentSwitch);
     };
   }, [sortedConversations, activeConversationId, handleSwitchChat]);
 
@@ -827,9 +828,9 @@ const ChatInterface: React.FC<Props> = ({
       }
     };
 
-    window.addEventListener('emdash:select-agent-tab', handleAgentTabSelection);
+    window.addEventListener('scrawl:select-agent-tab', handleAgentTabSelection);
     return () => {
-      window.removeEventListener('emdash:select-agent-tab', handleAgentTabSelection);
+      window.removeEventListener('scrawl:select-agent-tab', handleAgentTabSelection);
     };
   }, [sortedConversations, handleSwitchChat]);
 
@@ -840,8 +841,8 @@ const ChatInterface: React.FC<Props> = ({
         handleCloseChat(activeConversationId);
       }
     };
-    window.addEventListener('emdash:close-active-chat', handleCloseActiveChat);
-    return () => window.removeEventListener('emdash:close-active-chat', handleCloseActiveChat);
+    window.addEventListener('scrawl:close-active-chat', handleCloseActiveChat);
+    return () => window.removeEventListener('scrawl:close-active-chat', handleCloseActiveChat);
   }, [activeConversationId, handleCloseChat]);
 
   const isTerminal = agentMeta[agent]?.terminalOnly === true;
@@ -974,15 +975,35 @@ const ChatInterface: React.FC<Props> = ({
   // Only use keystroke injection for agents WITHOUT CLI flag support,
   // or agents that explicitly opt into it (useKeystrokeInjection: true).
   // Agents with initialPromptFlag use CLI arg injection via TerminalPane instead.
-  useInitialPromptInjection({
+  useContentAwarePromptInjection({
     taskId: task.id,
     providerId: agent,
     prompt: initialInjection,
+    taskMetadata: task.metadata as Record<string, unknown> | null | undefined,
     enabled:
       isTerminal &&
       (agentMeta[agent]?.initialPromptFlag === undefined ||
         agentMeta[agent]?.useKeystrokeInjection === true),
   });
+
+  // Enhance the initial prompt with content context for CLI-argument injection path
+  const [enhancedInjection, setEnhancedInjection] = useState<string | null>(null);
+  useEffect(() => {
+    if (!initialInjection) {
+      setEnhancedInjection(null);
+      return;
+    }
+    if (!hasContentWorkflow(task.metadata as Record<string, unknown> | null | undefined)) {
+      setEnhancedInjection(initialInjection);
+      return;
+    }
+    enhancePromptFromTaskMetadata(
+      initialInjection,
+      task.metadata as Record<string, unknown> | null | undefined
+    )
+      .then((result) => setEnhancedInjection(result.prompt))
+      .catch(() => setEnhancedInjection(initialInjection));
+  }, [initialInjection, task.metadata]);
 
   // Ensure an agent is stored for this task so fallbacks can subscribe immediately
   useEffect(() => {
@@ -1234,7 +1255,7 @@ const ChatInterface: React.FC<Props> = ({
                     agentMeta[agent]?.initialPromptFlag !== undefined &&
                     !agentMeta[agent]?.useKeystrokeInjection &&
                     !task.metadata?.initialInjectionSent
-                      ? (initialInjection ?? undefined)
+                      ? (enhancedInjection ?? undefined)
                       : undefined
                   }
                   onFirstMessage={shouldCaptureFirstMessage ? handleFirstMessage : undefined}

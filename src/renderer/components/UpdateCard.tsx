@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, Download, RefreshCw, AlertCircle, Loader2 } from 'lucide-react';
-import { useUpdater, EMDASH_RELEASES_URL } from '@/hooks/useUpdater';
+import { useUpdater, SCRAWL_RELEASES_URL } from '@/hooks/useUpdater';
 
 export function UpdateCard(): JSX.Element {
   const updater = useUpdater();
@@ -47,7 +47,7 @@ export function UpdateCard(): JSX.Element {
             Auto-updates are enabled in production builds.{' '}
             <button
               type="button"
-              onClick={() => window.electronAPI.openExternal(EMDASH_RELEASES_URL)}
+              onClick={() => window.electronAPI.openExternal(SCRAWL_RELEASES_URL)}
               className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground"
             >
               View changelog ↗
@@ -151,7 +151,7 @@ export function UpdateCard(): JSX.Element {
         return (
           <p className="flex items-center gap-1 text-sm text-green-600 dark:text-green-500">
             <CheckCircle2 className="h-3 w-3" />
-            Update ready. Restart Emdash to use the new version.
+            Update ready. Restart Scrawl to use the new version.
           </p>
         );
 
@@ -159,7 +159,7 @@ export function UpdateCard(): JSX.Element {
         return (
           <p className="flex items-center gap-1 text-sm text-muted-foreground">
             <Loader2 className="h-3 w-3 animate-spin" />
-            Installing update. Emdash will close and restart automatically — this may take a few
+            Installing update. Scrawl will close and restart automatically — this may take a few
             seconds.
           </p>
         );
@@ -182,7 +182,7 @@ export function UpdateCard(): JSX.Element {
             You're up to date.{' '}
             <button
               type="button"
-              onClick={() => window.electronAPI.openExternal(EMDASH_RELEASES_URL)}
+              onClick={() => window.electronAPI.openExternal(SCRAWL_RELEASES_URL)}
               className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground"
             >
               View changelog ↗

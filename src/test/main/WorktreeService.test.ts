@@ -8,7 +8,7 @@ import { execSync, execFileSync } from 'child_process';
 vi.mock('electron', () => ({
   app: {
     getPath: vi.fn().mockReturnValue(os.tmpdir()),
-    getName: vi.fn().mockReturnValue('emdash-test'),
+    getName: vi.fn().mockReturnValue('scrawl-test'),
     getVersion: vi.fn().mockReturnValue('0.0.0-test'),
   },
 }));
@@ -257,16 +257,16 @@ describe('WorktreeService', () => {
       );
     });
 
-    it('should read patterns from .emdash.json if present', async () => {
-      // Create .emdash.json with custom patterns
+    it('should read patterns from .scrawl.json if present', async () => {
+      // Create .scrawl.json with custom patterns
       fs.writeFileSync(
-        path.join(sourceDir, '.emdash.json'),
+        path.join(sourceDir, '.scrawl.json'),
         JSON.stringify({ preservePatterns: ['custom.secret'] })
       );
 
       // Create the custom file
       fs.writeFileSync(path.join(sourceDir, 'custom.secret'), 'my-secret-value');
-      fs.writeFileSync(path.join(sourceDir, '.gitignore'), 'custom.secret\n.emdash.json\n');
+      fs.writeFileSync(path.join(sourceDir, '.gitignore'), 'custom.secret\n.scrawl.json\n');
       execSync('git add .gitignore', { cwd: sourceDir, stdio: 'pipe' });
       execSync('git commit -m "update gitignore"', { cwd: sourceDir, stdio: 'pipe' });
 
@@ -278,7 +278,7 @@ describe('WorktreeService', () => {
       expect(result.copied).toContain('custom.secret');
     });
 
-    it('should fall back to defaults when .emdash.json is missing', async () => {
+    it('should fall back to defaults when .scrawl.json is missing', async () => {
       const patterns = (service as any).getPreservePatterns(sourceDir);
       expect(patterns).toContain('.env');
       expect(patterns).toContain('.envrc');
@@ -291,10 +291,10 @@ describe('WorktreeService', () => {
         '{"sandbox":"workspace-write"}'
       );
       fs.writeFileSync(
-        path.join(sourceDir, '.emdash.json'),
+        path.join(sourceDir, '.scrawl.json'),
         JSON.stringify({ preservePatterns: ['.claude/**'] })
       );
-      fs.writeFileSync(path.join(sourceDir, '.gitignore'), '.claude/\n.emdash.json\n');
+      fs.writeFileSync(path.join(sourceDir, '.gitignore'), '.claude/\n.scrawl.json\n');
       execSync('git add .gitignore', { cwd: sourceDir, stdio: 'pipe' });
       execSync('git commit -m "update gitignore for claude"', { cwd: sourceDir, stdio: 'pipe' });
 

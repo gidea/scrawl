@@ -190,7 +190,7 @@ const OpenPrsSection: React.FC<OpenPrsSectionProps> = ({ projectPath, projectId,
                             Review
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent side="top">Review PR in Emdash</TooltipContent>
+                        <TooltipContent side="top">Review PR in Scrawl</TooltipContent>
                       </Tooltip>
                       <Tooltip>
                         <TooltipTrigger asChild>

@@ -71,9 +71,9 @@ function applyAgentEventHookEnv(env: Record<string, string>, ptyId: string): voi
   const hookPort = agentEventService.getPort();
   if (hookPort <= 0) return;
 
-  env['EMDASH_HOOK_PORT'] = String(hookPort);
-  env['EMDASH_PTY_ID'] = ptyId;
-  env['EMDASH_HOOK_TOKEN'] = agentEventService.getToken();
+  env['SCRAWL_HOOK_PORT'] = String(hookPort);
+  env['SCRAWL_PTY_ID'] = ptyId;
+  env['SCRAWL_HOOK_TOKEN'] = agentEventService.getToken();
 }
 
 function applyOpenCodeRuntimeEnv(
@@ -164,9 +164,9 @@ function getDisplayEnv(): Record<string, string> {
  */
 export function getTmuxSessionName(ptyId: string): string {
   // PTY ID format: {providerId}-main-{taskId} or {providerId}-chat-{conversationId}
-  // Prefix with "emdash-" and sanitize
+  // Prefix with "scrawl-" and sanitize
   const sanitized = ptyId.replace(/[^a-zA-Z0-9._-]/g, '-');
-  return `emdash-${sanitized}`;
+  return `scrawl-${sanitized}`;
 }
 
 /**
@@ -767,27 +767,27 @@ function makePosixCodexNotifyCommand(): string[] {
     `printf '%s' "$1" | ` +
     `curl -sf -X POST ` +
     `-H 'Content-Type: application/json' ` +
-    `-H "X-Emdash-Token: $EMDASH_HOOK_TOKEN" ` +
-    `-H "X-Emdash-Pty-Id: $EMDASH_PTY_ID" ` +
-    `-H 'X-Emdash-Event-Type: notification' ` +
+    `-H "X-Scrawl-Token: $SCRAWL_HOOK_TOKEN" ` +
+    `-H "X-Scrawl-Pty-Id: $SCRAWL_PTY_ID" ` +
+    `-H 'X-Scrawl-Event-Type: notification' ` +
     `-d @- ` +
-    `"http://127.0.0.1:$EMDASH_HOOK_PORT/hook" || true`;
+    `"http://127.0.0.1:$SCRAWL_HOOK_PORT/hook" || true`;
 
   return ['sh', '-lc', script, 'sh'];
 }
 
 function ensureWindowsCodexNotifyScript(): string {
-  const scriptPath = path.join(os.tmpdir(), 'emdash-codex-notify.ps1');
+  const scriptPath = path.join(os.tmpdir(), 'scrawl-codex-notify.ps1');
   const script = [
     'param([string]$payload)',
     'try {',
     '  Invoke-WebRequest -UseBasicParsing -Method POST ' +
-      "-Uri ('http://127.0.0.1:' + $env:EMDASH_HOOK_PORT + '/hook') " +
+      "-Uri ('http://127.0.0.1:' + $env:SCRAWL_HOOK_PORT + '/hook') " +
       '-Headers @{ ' +
       "'Content-Type' = 'application/json'; " +
-      "'X-Emdash-Token' = $env:EMDASH_HOOK_TOKEN; " +
-      "'X-Emdash-Pty-Id' = $env:EMDASH_PTY_ID; " +
-      "'X-Emdash-Event-Type' = 'notification' " +
+      "'X-Scrawl-Token' = $env:SCRAWL_HOOK_TOKEN; " +
+      "'X-Scrawl-Pty-Id' = $env:SCRAWL_PTY_ID; " +
+      "'X-Scrawl-Event-Type' = 'notification' " +
       '} -Body $payload | Out-Null',
     '} catch {',
     '  exit 0',
@@ -964,8 +964,8 @@ export function startSshPty(options: {
   rows?: number;
   env?: Record<string, string>;
 }): IPty {
-  if (process.env.EMDASH_DISABLE_PTY === '1') {
-    throw new Error('PTY disabled via EMDASH_DISABLE_PTY=1');
+  if (process.env.SCRAWL_DISABLE_PTY === '1') {
+    throw new Error('PTY disabled via SCRAWL_DISABLE_PTY=1');
   }
 
   const { id, target, sshArgs = [], remoteInitCommand, cols = 120, rows = 32, env } = options;
@@ -982,7 +982,7 @@ export function startSshPty(options: {
   const useEnv: Record<string, string> = {
     TERM: 'xterm-256color',
     COLORTERM: 'truecolor',
-    TERM_PROGRAM: 'emdash',
+    TERM_PROGRAM: 'scrawl',
     HOME: process.env.HOME || os.homedir(),
     USER: process.env.USER || os.userInfo().username,
     PATH: process.env.PATH || process.env.Path || '',
@@ -1002,7 +1002,7 @@ export function startSshPty(options: {
 
   if (env) {
     for (const [key, value] of Object.entries(env)) {
-      if (!key.startsWith('EMDASH_')) continue;
+      if (!key.startsWith('SCRAWL_')) continue;
       if (typeof value === 'string') {
         useEnv[key] = value;
       }
@@ -1046,8 +1046,8 @@ export function startDirectPty(options: {
   resume?: boolean;
   tmux?: boolean;
 }): IPty | null {
-  if (process.env.EMDASH_DISABLE_PTY === '1') {
-    throw new Error('PTY disabled via EMDASH_DISABLE_PTY=1');
+  if (process.env.SCRAWL_DISABLE_PTY === '1') {
+    throw new Error('PTY disabled via SCRAWL_DISABLE_PTY=1');
   }
 
   // Tmux wrapping requires a shell — fall back to startPty() which handles tmux.
@@ -1145,7 +1145,7 @@ export function startDirectPty(options: {
   const useEnv: Record<string, string> = {
     TERM: 'xterm-256color',
     COLORTERM: 'truecolor',
-    TERM_PROGRAM: 'emdash',
+    TERM_PROGRAM: 'scrawl',
     HOME: process.env.HOME || os.homedir(),
     USER: process.env.USER || os.userInfo().username,
     // Include PATH so CLI can find its dependencies
@@ -1174,7 +1174,7 @@ export function startDirectPty(options: {
 
   if (env) {
     for (const [key, value] of Object.entries(env)) {
-      if (!key.startsWith('EMDASH_')) continue;
+      if (!key.startsWith('SCRAWL_')) continue;
       if (typeof value === 'string') {
         useEnv[key] = value;
       }
@@ -1236,8 +1236,8 @@ export async function startPty(options: {
   shellSetup?: string;
   tmux?: boolean;
 }): Promise<IPty> {
-  if (process.env.EMDASH_DISABLE_PTY === '1') {
-    throw new Error('PTY disabled via EMDASH_DISABLE_PTY=1');
+  if (process.env.SCRAWL_DISABLE_PTY === '1') {
+    throw new Error('PTY disabled via SCRAWL_DISABLE_PTY=1');
   }
   const {
     id,
@@ -1259,7 +1259,7 @@ export async function startPty(options: {
 
   // Build a clean environment instead of inheriting process.env wholesale.
   //
-  // WHY: When Emdash runs as an AppImage on Linux (or other packaged Electron apps),
+  // WHY: When Scrawl runs as an AppImage on Linux (or other packaged Electron apps),
   // the parent process.env contains packaging artifacts like PYTHONHOME, APPDIR,
   // APPIMAGE, etc. These variables can break user tools, especially Python virtual
   // environments which fail with "Could not find platform independent libraries"
@@ -1274,7 +1274,7 @@ export async function startPty(options: {
   const useEnv: Record<string, string> = {
     TERM: 'xterm-256color',
     COLORTERM: 'truecolor',
-    TERM_PROGRAM: 'emdash',
+    TERM_PROGRAM: 'scrawl',
     HOME: process.env.HOME || os.homedir(),
     USER: process.env.USER || os.userInfo().username,
     SHELL: process.env.SHELL || defaultShell,

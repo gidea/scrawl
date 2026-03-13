@@ -7,7 +7,7 @@ import os from 'os';
 vi.mock('electron', () => ({
   app: {
     getPath: vi.fn().mockReturnValue(os.tmpdir()),
-    getName: vi.fn().mockReturnValue('emdash-test'),
+    getName: vi.fn().mockReturnValue('scrawl-test'),
     getVersion: vi.fn().mockReturnValue('0.0.0-test'),
   },
 }));
@@ -143,7 +143,7 @@ describe('SkillsService', () => {
       fs.writeFileSync(path.join(dir, 'SKILL.md'), generateSkillMd(name, `Desc for ${name}`));
     }
     // Also create a non-skill dir
-    fs.mkdirSync(path.join(tmpDir, '.emdash'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, '.scrawl'), { recursive: true });
 
     const entries = fs.readdirSync(tmpDir, { withFileTypes: true });
     const skills = entries

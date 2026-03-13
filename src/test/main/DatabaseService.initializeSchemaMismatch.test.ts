@@ -61,7 +61,7 @@ vi.mock('sqlite3', () => ({
 }));
 
 vi.mock('../../main/db/path', () => ({
-  resolveDatabasePath: () => '/tmp/emdash-init-test.db',
+  resolveDatabasePath: () => '/tmp/scrawl-init-test.db',
   resolveMigrationsPath: () => '/tmp/drizzle',
 }));
 
@@ -82,7 +82,7 @@ describe('DatabaseService.initialize schema contract handling', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    delete process.env.EMDASH_DISABLE_NATIVE_DB;
+    delete process.env.SCRAWL_DISABLE_NATIVE_DB;
     schemaState.tables = new Set(['projects', 'tasks', 'conversations']);
     schemaState.columnsByTable = {
       projects: ['id', 'name', 'path', 'git_remote', 'git_branch'],
@@ -104,7 +104,7 @@ describe('DatabaseService.initialize schema contract handling', () => {
     expect(captureDatabaseErrorMock).toHaveBeenCalledWith(
       expect.any(DatabaseSchemaMismatchError),
       'initialize_schema_contract',
-      { db_path: '/tmp/emdash-init-test.db' }
+      { db_path: '/tmp/scrawl-init-test.db' }
     );
 
     await service.close();
@@ -137,7 +137,7 @@ describe('DatabaseService.initialize schema contract handling', () => {
 
     await expect(service.initialize()).rejects.toThrow('migration boom');
     expect(captureDatabaseErrorMock).toHaveBeenCalledWith(migrationError, 'initialize_migrations', {
-      db_path: '/tmp/emdash-init-test.db',
+      db_path: '/tmp/scrawl-init-test.db',
     });
 
     await service.close();

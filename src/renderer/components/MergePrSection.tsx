@@ -168,7 +168,7 @@ export function MergePrSection({
   const [isTogglingAutoMerge, setIsTogglingAutoMerge] = useState(false);
   const [strategy, setStrategy] = useState<MergeStrategy>(() => {
     try {
-      const stored = localStorage.getItem('emdash:prMergeStrategy');
+      const stored = localStorage.getItem('scrawl:prMergeStrategy');
       if (stored === 'merge' || stored === 'squash' || stored === 'rebase') return stored;
     } catch {}
     return 'merge';
@@ -224,7 +224,7 @@ export function MergePrSection({
   const setAndPersistStrategy = (next: MergeStrategy) => {
     setStrategy(next);
     try {
-      localStorage.setItem('emdash:prMergeStrategy', next);
+      localStorage.setItem('scrawl:prMergeStrategy', next);
     } catch {}
   };
 

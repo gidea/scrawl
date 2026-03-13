@@ -35,7 +35,7 @@ Scrawl supports 22+ CLI agents, including Claude Code, Gemini, Qwen Code, and Co
 
 ---
 
-> **Attribution.** Scrawl is a fork of [Emdash](https://github.com/generalaction/emdash), an Agentic Development Environment built by the team at [generalaction](https://github.com/generalaction). We mean no disrespect to the original maintainers — Emdash's architecture, worktree isolation model, and multi-agent orchestration were the direct inspiration for this project. We are grateful for their creativity and open source work. Scrawl takes that foundation and repositions it for a different audience: writers who want the same parallel, isolated, reviewable workflow for written content.
+> **Attribution.** Scrawl is a fork of [Scrawl](https://github.com/generalaction/scrawl), an Agentic Development Environment built by the team at [generalaction](https://github.com/generalaction). We mean no disrespect to the original maintainers — Scrawl's architecture, worktree isolation model, and multi-agent orchestration were the direct inspiration for this project. We are grateful for their creativity and open source work. Scrawl takes that foundation and repositions it for a different audience: writers who want the same parallel, isolated, reviewable workflow for written content.
 
 ---
 
@@ -144,9 +144,9 @@ Contributions welcome! See the [Contributing Guide](CONTRIBUTING.md) to get star
 > **App data is local-first.** We store app state in a local **SQLite** database:
 >
 > ```
-> macOS:   ~/Library/Application Support/emdash/emdash.db
-> Windows: %APPDATA%\emdash\emdash.db
-> Linux:   ~/.config/emdash/emdash.db
+> macOS:   ~/Library/Application Support/scrawl/scrawl.db
+> Windows: %APPDATA%\scrawl\scrawl.db
+> Linux:   ~/.config/scrawl/scrawl.db
 > ```
 >
 > **Privacy note:** While Scrawl itself stores data locally, **when you use any agent (Claude Code, Codex, Gemini, etc.), your content and prompts are sent to that provider's cloud API servers** for processing. Each provider has their own data handling and retention policies.

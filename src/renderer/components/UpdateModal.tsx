@@ -14,7 +14,7 @@ import {
   AlertCircle,
   Loader2,
 } from 'lucide-react';
-import { useUpdater, EMDASH_RELEASES_URL } from '@/hooks/useUpdater';
+import { useUpdater, SCRAWL_RELEASES_URL } from '@/hooks/useUpdater';
 import { BaseModalProps } from '@/contexts/ModalProvider';
 
 interface UpdateModalProps {
@@ -65,7 +65,7 @@ function UpdateModal({ onClose }: UpdateModalProps): JSX.Element {
           Current version: v{appVersion || '...'} &middot;{' '}
           <button
             type="button"
-            onClick={() => window.electronAPI.openExternal(EMDASH_RELEASES_URL)}
+            onClick={() => window.electronAPI.openExternal(SCRAWL_RELEASES_URL)}
             className="inline-flex items-center gap-1 outline-none hover:text-foreground"
           >
             Changelog <ExternalLink className="h-3 w-3" />
@@ -84,7 +84,7 @@ function UpdateModal({ onClose }: UpdateModalProps): JSX.Element {
         {(updater.state.status === 'idle' || updater.state.status === 'not-available') && (
           <>
             <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-500" />
-            <p className="text-sm">Emdash is up to date.</p>
+            <p className="text-sm">Scrawl is up to date.</p>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={onClose}>
                 OK
@@ -155,7 +155,7 @@ function UpdateModal({ onClose }: UpdateModalProps): JSX.Element {
           <>
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
             <p className="text-center text-sm text-muted-foreground">
-              Installing update. Emdash will close automatically when ready.
+              Installing update. Scrawl will close automatically when ready.
             </p>
           </>
         )}

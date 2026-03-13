@@ -9,7 +9,7 @@ import { sshService } from './ssh/SshService';
 import { RemoteFileSystem } from './fs/RemoteFileSystem';
 import { GitIgnoreParser } from '../utils/gitIgnore';
 
-const DEFAULT_EMDASH_CONFIG = `{
+const DEFAULT_SCRAWL_CONFIG = `{
   "preservePatterns": [
     ".env",
     ".env.keys",
@@ -684,7 +684,7 @@ export function registerFsIpc(): void {
           return { success: false, error: 'Unsupported attachment type' };
         }
 
-        const baseDir = path.join(taskPath, '.emdash', args.subdir || DEFAULT_ATTACHMENTS_SUBDIR);
+        const baseDir = path.join(taskPath, '.scrawl', args.subdir || DEFAULT_ATTACHMENTS_SUBDIR);
         fs.mkdirSync(baseDir, { recursive: true });
 
         const baseName = path.basename(srcPath);
@@ -830,7 +830,7 @@ export function registerFsIpc(): void {
     }
   );
 
-  // Get .emdash.json config file content (create with defaults if missing)
+  // Get .scrawl.json config file content (create with defaults if missing)
   ipcMain.handle('fs:getProjectConfig', async (_event, args: { projectPath: string }) => {
     try {
       const { projectPath } = args;
@@ -838,11 +838,11 @@ export function registerFsIpc(): void {
         return { success: false, error: 'Invalid project path' };
       }
 
-      const configPath = path.join(projectPath, '.emdash.json');
+      const configPath = path.join(projectPath, '.scrawl.json');
 
       // Create with defaults if missing
       if (!fs.existsSync(configPath)) {
-        fs.writeFileSync(configPath, DEFAULT_EMDASH_CONFIG, 'utf8');
+        fs.writeFileSync(configPath, DEFAULT_SCRAWL_CONFIG, 'utf8');
       }
 
       const content = fs.readFileSync(configPath, 'utf8');
@@ -853,7 +853,7 @@ export function registerFsIpc(): void {
     }
   });
 
-  // Save .emdash.json config file content
+  // Save .scrawl.json config file content
   ipcMain.handle(
     'fs:saveProjectConfig',
     async (_event, args: { projectPath: string; content: string }) => {
@@ -870,7 +870,7 @@ export function registerFsIpc(): void {
           return { success: false, error: 'Invalid JSON format' };
         }
 
-        const configPath = path.join(projectPath, '.emdash.json');
+        const configPath = path.join(projectPath, '.scrawl.json');
         fs.writeFileSync(configPath, content, 'utf8');
         return { success: true, path: configPath };
       } catch (error) {

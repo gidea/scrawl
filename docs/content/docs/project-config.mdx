@@ -59,39 +59,39 @@ The setup script runs as soon as the worktree is ready, in parallel with the age
 
 When a task terminal starts, Scrawl injects convenience environment variables you can use inside setup scripts and other terminal commands.
 
-If you run multiple tasks in parallel, do not hardcode `localhost:3000`. Use `EMDASH_PORT` so each task gets its own localhost port automatically.
+If you run multiple tasks in parallel, do not hardcode `localhost:3000`. Use `SCRAWL_PORT` so each task gets its own localhost port automatically.
 
 | Variable                | Purpose                                                          |
 | ----------------------- | ---------------------------------------------------------------- |
-| `EMDASH_TASK_ID`        | Stable unique task id                                            |
-| `EMDASH_TASK_NAME`      | Shell-safe task name slug                                        |
-| `EMDASH_TASK_PATH`      | Absolute task (worktree) path                                    |
-| `EMDASH_ROOT_PATH`      | Absolute project root path                                       |
-| `EMDASH_DEFAULT_BRANCH` | Default branch name (e.g., main)                                 |
-| `EMDASH_PORT`           | Unique localhost base port per task (use for `PORT` or `--port`) |
+| `SCRAWL_TASK_ID`        | Stable unique task id                                            |
+| `SCRAWL_TASK_NAME`      | Shell-safe task name slug                                        |
+| `SCRAWL_TASK_PATH`      | Absolute task (worktree) path                                    |
+| `SCRAWL_ROOT_PATH`      | Absolute project root path                                       |
+| `SCRAWL_DEFAULT_BRANCH` | Default branch name (e.g., main)                                 |
+| `SCRAWL_PORT`           | Unique localhost base port per task (use for `PORT` or `--port`) |
 
-`EMDASH_PORT` is different for each task. Example: one task might run on `localhost:50120`, another on `localhost:50730`, so they do not collide on `localhost:3000`.
+`SCRAWL_PORT` is different for each task. Example: one task might run on `localhost:50120`, another on `localhost:50730`, so they do not collide on `localhost:3000`.
 
 ### Avoid localhost port collisions
 
 Use this as your **Run script** value:
 
 ```bash
-PORT=$EMDASH_PORT pnpm run dev
+PORT=$SCRAWL_PORT pnpm run dev
 ```
 
 If your dev server expects a `--port` flag instead of `PORT`:
 
 ```bash
-pnpm run dev -- --port=$EMDASH_PORT
+pnpm run dev -- --port=$SCRAWL_PORT
 ```
 
-For multiple local services, use `EMDASH_PORT` with small offsets:
+For multiple local services, use `SCRAWL_PORT` with small offsets:
 
 ```bash
-APP_PORT=$EMDASH_PORT
-DB_PORT=$((EMDASH_PORT + 1))
-REDIS_PORT=$((EMDASH_PORT + 2))
+APP_PORT=$SCRAWL_PORT
+DB_PORT=$((SCRAWL_PORT + 1))
+REDIS_PORT=$((SCRAWL_PORT + 2))
 ```
 
 ### Example: docker-compose override with task ports
@@ -100,10 +100,10 @@ REDIS_PORT=$((EMDASH_PORT + 2))
 services:
   db:
     ports:
-      - '${EMDASH_PORT:-5432}:5432'
+      - '${SCRAWL_PORT:-5432}:5432'
   app:
     environment:
-      - DATABASE_PORT=${EMDASH_PORT:-5432}
+      - DATABASE_PORT=${SCRAWL_PORT:-5432}
 ```
 
 ### Examples
@@ -119,7 +119,7 @@ pnpm install
 `Run script`:
 
 ```bash
-PORT=$EMDASH_PORT pnpm run dev
+PORT=$SCRAWL_PORT pnpm run dev
 ```
 
 Python project with virtual environment:
@@ -132,6 +132,6 @@ python -m venv .venv && source .venv/bin/activate && pip install -r requirements
 
 ## Editing the config
 
-On the project page, click **Edit config**, fill the fields, then click **Save**. Scrawl stores these settings in `.emdash.json`.
+On the project page, click **Edit config**, fill the fields, then click **Save**. Scrawl stores these settings in `.scrawl.json`.
 
 ![Edit config button on the project page](/media/edit-config.png)

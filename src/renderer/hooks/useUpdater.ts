@@ -13,7 +13,7 @@ export type UpdateState =
   | { status: 'error'; message: string };
 
 export const UPDATE_API_UNAVAILABLE_ERROR = 'Update API unavailable' as const;
-export { EMDASH_RELEASES_URL } from '@shared/urls';
+export { SCRAWL_RELEASES_URL } from '@shared/urls';
 
 export function updaterUnavailableResult(setState: (state: UpdateState) => void): {
   success: false;
@@ -87,7 +87,7 @@ export function useUpdater() {
     }
     if (!res.success) {
       const hint = res?.devDisabled
-        ? 'Cannot download updates in development unless EMDASH_DEV_UPDATES=true is set.'
+        ? 'Cannot download updates in development unless SCRAWL_DEV_UPDATES=true is set.'
         : res.error || 'Failed to download update';
       setState({ status: 'error', message: hint });
     }

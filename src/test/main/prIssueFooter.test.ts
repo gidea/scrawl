@@ -9,10 +9,10 @@ describe('injectIssueFooter', () => {
     });
 
     expect(result).toContain('## Changes');
-    expect(result).toContain('<!-- emdash-issue-footer:start -->');
+    expect(result).toContain('<!-- scrawl-issue-footer:start -->');
     expect(result).toContain('Fixes #123');
     expect(result).toContain('Fixes ABC-456');
-    expect(result).toContain('<!-- emdash-issue-footer:end -->');
+    expect(result).toContain('<!-- scrawl-issue-footer:end -->');
   });
 
   it('creates a footer-only body when no original body is provided', () => {
@@ -21,7 +21,7 @@ describe('injectIssueFooter', () => {
     });
 
     expect(result).toBe(
-      '<!-- emdash-issue-footer:start -->\nFixes #42\n<!-- emdash-issue-footer:end -->'
+      '<!-- scrawl-issue-footer:start -->\nFixes #42\n<!-- scrawl-issue-footer:end -->'
     );
   });
 
@@ -31,7 +31,7 @@ describe('injectIssueFooter', () => {
     const second = injectIssueFooter(first, metadata);
 
     expect(second).toBe(first);
-    expect(second?.match(/emdash-issue-footer:start/g)).toHaveLength(1);
+    expect(second?.match(/scrawl-issue-footer:start/g)).toHaveLength(1);
     expect(second?.match(/Fixes #77/g)).toHaveLength(1);
     expect(second?.match(/Fixes TST-8/g)).toHaveLength(1);
   });
@@ -40,9 +40,9 @@ describe('injectIssueFooter', () => {
     const staleBody = [
       'Body text',
       '',
-      '<!-- emdash-issue-footer:start -->',
+      '<!-- scrawl-issue-footer:start -->',
       'Fixes #1',
-      '<!-- emdash-issue-footer:end -->',
+      '<!-- scrawl-issue-footer:end -->',
     ].join('\n');
 
     const result = injectIssueFooter(staleBody, {
@@ -51,16 +51,16 @@ describe('injectIssueFooter', () => {
 
     expect(result).toContain('Fixes #2');
     expect(result).not.toContain('Fixes #1');
-    expect(result?.match(/emdash-issue-footer:start/g)).toHaveLength(1);
+    expect(result?.match(/scrawl-issue-footer:start/g)).toHaveLength(1);
   });
 
   it('removes an existing injected block when no issue metadata is present', () => {
     const bodyWithFooter = [
       'Body text',
       '',
-      '<!-- emdash-issue-footer:start -->',
+      '<!-- scrawl-issue-footer:start -->',
       'Fixes #5',
-      '<!-- emdash-issue-footer:end -->',
+      '<!-- scrawl-issue-footer:end -->',
     ].join('\n');
 
     const result = injectIssueFooter(bodyWithFooter, null);
@@ -69,9 +69,9 @@ describe('injectIssueFooter', () => {
 
   it('returns undefined when body only contained injected footer and no issues remain', () => {
     const bodyWithFooter = [
-      '<!-- emdash-issue-footer:start -->',
+      '<!-- scrawl-issue-footer:start -->',
       'Fixes #5',
-      '<!-- emdash-issue-footer:end -->',
+      '<!-- scrawl-issue-footer:end -->',
     ].join('\n');
 
     const result = injectIssueFooter(bodyWithFooter, {});

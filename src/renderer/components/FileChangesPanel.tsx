@@ -202,10 +202,10 @@ const FileChangesPanelComponent: React.FC<FileChangesPanelProps> = ({
   const [restoreTarget, setRestoreTarget] = useState<string | null>(null);
   const [prMode, setPrMode] = useState<PrMode>(() => {
     try {
-      const stored = localStorage.getItem('emdash:prMode');
+      const stored = localStorage.getItem('scrawl:prMode');
       if (stored === 'create' || stored === 'draft' || stored === 'merge') return stored;
       // Migrate from old boolean key
-      if (localStorage.getItem('emdash:createPrAsDraft') === 'true') return 'draft';
+      if (localStorage.getItem('scrawl:createPrAsDraft') === 'true') return 'draft';
       return 'create';
     } catch {
       // localStorage not available in some environments
@@ -217,7 +217,7 @@ const FileChangesPanelComponent: React.FC<FileChangesPanelProps> = ({
   const selectPrMode = (mode: PrMode) => {
     setPrMode(mode);
     try {
-      localStorage.setItem('emdash:prMode', mode);
+      localStorage.setItem('scrawl:prMode', mode);
     } catch {
       // localStorage not available
     }
