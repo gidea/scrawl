@@ -39,28 +39,6 @@ Scrawl supports 22+ CLI agents, including Claude Code, Gemini, Qwen Code, and Co
 
 ---
 
-<div align="center">
-
-[Installation](#installation) • [Agents](#agents) • [Briefs & Tickets](#briefs--tickets) • [Contributing](#contributing) • [FAQ](#faq)
-
-</div>
-
-<img alt="Scrawl product" src="./docs/public/media/product.jpeg" />
-
-# Installation
-
-### macOS
-- Apple Silicon: https://github.com/gidea/scrawl/releases/latest/download/scrawl-arm64.dmg
-- Intel x64: https://github.com/gidea/scrawl/releases/latest/download/scrawl-x64.dmg
-
-### Windows
-- Installer (x64): https://github.com/gidea/scrawl/releases/latest/download/scrawl-x64.msi
-- Portable (x64): https://github.com/gidea/scrawl/releases/latest/download/scrawl-x64.exe
-
-### Linux
-- AppImage (x64): https://github.com/gidea/scrawl/releases/latest/download/scrawl-x86_64.AppImage
-- Debian package (x64): https://github.com/gidea/scrawl/releases/latest/download/scrawl-amd64.deb
-
 ### Release Overview
 
 **[Latest Releases (macOS • Windows • Linux)](https://github.com/gidea/scrawl/releases/latest)**
