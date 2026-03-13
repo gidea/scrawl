@@ -19,6 +19,7 @@ export interface ContentWorkflowMetadata {
   stage: string;
   collectionId?: string;
   brief?: ContentBrief;
+  role?: string;
 }
 
 /**
@@ -100,7 +101,7 @@ export async function enhancePromptFromTaskMetadata(
 ): Promise<{ prompt: string; context: ContentContext | null }> {
   const workflow = getContentWorkflowFromMetadata(metadata);
 
-  if (!workflow || !workflow.collectionId) {
+  if (!workflow || (!workflow.collectionId && !workflow.role)) {
     return { prompt: originalPrompt, context: null };
   }
 
@@ -108,7 +109,7 @@ export async function enhancePromptFromTaskMetadata(
     originalPrompt,
     workflow.collectionId,
     workflow.brief,
-    role
+    role || workflow.role
   );
 }
 

@@ -35,8 +35,10 @@ import { useProjectManagementContext } from '../contexts/ProjectManagementProvid
 import { useTaskManagementContext } from '../contexts/TaskManagementContext';
 import { rpc } from '@/lib/rpc';
 import { CollectionSelector } from './content/CollectionSelector';
+import { ContentRoleSelector } from './content/ContentRoleSelector';
 import { useContentWorkspace } from '@/hooks/useContentWorkspace';
 import { useCollections } from '@/hooks/useCollections';
+import { useRoles } from '@/hooks/useRoles';
 import { createContentWorkflowMetadata } from '@/lib/contentWorkflowStatus';
 
 const DEFAULT_AGENT: Agent = 'claude';
@@ -144,6 +146,10 @@ const TaskModal: React.FC<TaskModalProps> = ({ onClose, onCreateTask }) => {
   const { workspaces, activeWorkspace, createWorkspace } = useContentWorkspace(selectedProject?.id);
   const { collections, createCollection } = useCollections(activeWorkspace?.id);
   const [selectedCollectionId, setSelectedCollectionId] = useState<string | null>(null);
+
+  // Roles
+  const { allRoles, createRole, deleteRole } = useRoles(activeWorkspace?.id ?? null);
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
 
   const handleEnsureWorkspaceAndCreate = useCallback(
     async (name: string, description?: string) => {
@@ -418,9 +424,17 @@ const TaskModal: React.FC<TaskModalProps> = ({ onClose, onCreateTask }) => {
     setIsCreating(true);
 
     try {
-      const contentMeta = selectedCollectionId
-        ? { contentWorkflow: createContentWorkflowMetadata('backlog', selectedCollectionId) }
-        : undefined;
+      const contentMeta =
+        selectedCollectionId || selectedRole
+          ? {
+              contentWorkflow: createContentWorkflowMetadata(
+                'backlog',
+                selectedCollectionId || undefined,
+                undefined,
+                selectedRole || undefined
+              ),
+            }
+          : undefined;
 
       await onCreateTask(
         finalName,
@@ -520,6 +534,19 @@ const TaskModal: React.FC<TaskModalProps> = ({ onClose, onCreateTask }) => {
               onSelect={setSelectedCollectionId}
               onCreateCollection={handleEnsureWorkspaceAndCreate}
               onUploadDocuments={handleUploadDocuments}
+            />
+          </div>
+
+          <div>
+            <Label className="mb-2 block">Content Role (optional)</Label>
+            <ContentRoleSelector
+              roles={allRoles}
+              selectedRole={selectedRole}
+              onRoleChange={setSelectedRole}
+              onCreateRole={async (name, systemPrompt, description) => {
+                await createRole(name, systemPrompt, description);
+              }}
+              onDeleteRole={deleteRole}
             />
           </div>
 

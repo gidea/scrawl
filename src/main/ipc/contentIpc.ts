@@ -10,6 +10,7 @@ import {
   type KanbanColumn,
   type ExportOptions,
 } from '../services/content';
+import { roleService } from '../services/content/RoleService';
 import { log } from '../lib/logger';
 
 export function registerContentIpc() {
@@ -662,4 +663,77 @@ export function registerContentIpc() {
       }
     }
   );
+
+  // ── Content Roles ─────────────────────────────────────────────────
+
+  ipcMain.handle(
+    'content:role:create',
+    async (
+      _,
+      args: {
+        workspaceId: string;
+        name: string;
+        systemPrompt: string;
+        description?: string;
+        icon?: string;
+      }
+    ) => {
+      try {
+        const role = await roleService.create(
+          args.workspaceId,
+          args.name,
+          args.systemPrompt,
+          args.description,
+          args.icon
+        );
+        return { success: true, data: role };
+      } catch (error) {
+        log.error('Failed to create content role:', error);
+        return { success: false, error: String(error) };
+      }
+    }
+  );
+
+  ipcMain.handle('content:role:getByWorkspace', async (_, workspaceId: string) => {
+    try {
+      const roles = await roleService.getByWorkspaceId(workspaceId);
+      return { success: true, data: roles };
+    } catch (error) {
+      log.error('Failed to get content roles:', error);
+      return { success: false, error: String(error) };
+    }
+  });
+
+  ipcMain.handle(
+    'content:role:update',
+    async (
+      _,
+      args: {
+        id: string;
+        name?: string;
+        description?: string;
+        systemPrompt?: string;
+        icon?: string;
+      }
+    ) => {
+      try {
+        const { id, ...updates } = args;
+        const role = await roleService.update(id, updates);
+        return { success: true, data: role };
+      } catch (error) {
+        log.error('Failed to update content role:', error);
+        return { success: false, error: String(error) };
+      }
+    }
+  );
+
+  ipcMain.handle('content:role:delete', async (_, id: string) => {
+    try {
+      await roleService.delete(id);
+      return { success: true };
+    } catch (error) {
+      log.error('Failed to delete content role:', error);
+      return { success: false, error: String(error) };
+    }
+  });
 }

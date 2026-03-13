@@ -887,6 +887,25 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.invoke('content:export:folder', args),
   contentExportSelectedToFile: (args: { taskId: string; options?: Record<string, unknown> }) =>
     ipcRenderer.invoke('content:export:selectedToFile', args),
+
+  // Content Roles
+  contentRoleCreate: (args: {
+    workspaceId: string;
+    name: string;
+    systemPrompt: string;
+    description?: string;
+    icon?: string;
+  }) => ipcRenderer.invoke('content:role:create', args),
+  contentRoleGetByWorkspace: (workspaceId: string) =>
+    ipcRenderer.invoke('content:role:getByWorkspace', workspaceId),
+  contentRoleUpdate: (args: {
+    id: string;
+    name?: string;
+    description?: string;
+    systemPrompt?: string;
+    icon?: string;
+  }) => ipcRenderer.invoke('content:role:update', args),
+  contentRoleDelete: (id: string) => ipcRenderer.invoke('content:role:delete', id),
 });
 
 // Type definitions for the exposed API

@@ -78,6 +78,13 @@
       "when": 1741622400000,
       "tag": "0010_add_content_workspace",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1741708800000,
+      "tag": "0011_add_content_roles",
+      "breakpoints": true
     }
   ]
 }

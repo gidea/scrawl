@@ -23,6 +23,8 @@ export interface ContentWorkflowMetadata {
     tone?: string;
     notes?: string;
   };
+  /** Content role for agent prompt shaping */
+  role?: string;
   /** Timestamp when stage last changed */
   stageChangedAt?: string;
 }
@@ -107,12 +109,14 @@ export function parseContentWorkflow(
 export function createContentWorkflowMetadata(
   stage: string,
   collectionId?: string,
-  brief?: ContentWorkflowMetadata['brief']
+  brief?: ContentWorkflowMetadata['brief'],
+  role?: string
 ): ContentWorkflowMetadata {
   return {
     stage,
     collectionId,
     brief,
+    role,
     stageChangedAt: new Date().toISOString(),
   };
 }

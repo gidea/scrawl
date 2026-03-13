@@ -294,6 +294,29 @@ export const knowledgeDocuments = sqliteTable(
   })
 );
 
+export const contentRoles = sqliteTable(
+  'content_roles',
+  {
+    id: text('id').primaryKey(),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => contentWorkspaces.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    description: text('description'),
+    systemPrompt: text('system_prompt').notNull(),
+    icon: text('icon'), // optional lucide icon name
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => ({
+    workspaceIdIdx: index('idx_content_roles_workspace_id').on(table.workspaceId),
+  })
+);
+
 export const contentOutputs = sqliteTable(
   'content_outputs',
   {
@@ -323,6 +346,14 @@ export const contentWorkspacesRelations = relations(contentWorkspaces, ({ one, m
   }),
   brandGuidelines: many(brandGuidelines),
   collections: many(collections),
+  roles: many(contentRoles),
+}));
+
+export const contentRolesRelations = relations(contentRoles, ({ one }) => ({
+  workspace: one(contentWorkspaces, {
+    fields: [contentRoles.workspaceId],
+    references: [contentWorkspaces.id],
+  }),
 }));
 
 export const brandGuidelinesRelations = relations(brandGuidelines, ({ one }) => ({
@@ -374,3 +405,5 @@ export type KnowledgeDocumentRow = typeof knowledgeDocuments.$inferSelect;
 export type KnowledgeDocumentInsert = typeof knowledgeDocuments.$inferInsert;
 export type ContentOutputRow = typeof contentOutputs.$inferSelect;
 export type ContentOutputInsert = typeof contentOutputs.$inferInsert;
+export type ContentRoleRow = typeof contentRoles.$inferSelect;
+export type ContentRoleInsert = typeof contentRoles.$inferInsert;

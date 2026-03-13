@@ -1444,6 +1444,26 @@ declare global {
         taskId: string;
         options?: ExportOptions;
       }) => Promise<{ success: boolean; filePath?: string; error?: string }>;
+
+      // Content Roles
+      contentRoleCreate: (args: {
+        workspaceId: string;
+        name: string;
+        systemPrompt: string;
+        description?: string;
+        icon?: string;
+      }) => Promise<{ success: boolean; data?: ContentRole; error?: string }>;
+      contentRoleGetByWorkspace: (
+        workspaceId: string
+      ) => Promise<{ success: boolean; data?: ContentRole[]; error?: string }>;
+      contentRoleUpdate: (args: {
+        id: string;
+        name?: string;
+        description?: string;
+        systemPrompt?: string;
+        icon?: string;
+      }) => Promise<{ success: boolean; data?: ContentRole | null; error?: string }>;
+      contentRoleDelete: (id: string) => Promise<{ success: boolean; error?: string }>;
     };
   }
 }
@@ -1484,6 +1504,16 @@ export type KnowledgeDocument = {
   name: string;
   content: string;
   metadata?: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+};
+export type ContentRole = {
+  id: string;
+  workspaceId: string;
+  name: string;
+  description: string | null;
+  systemPrompt: string;
+  icon: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -2446,6 +2476,26 @@ export interface ElectronAPI {
     taskId: string;
     options?: ExportOptions;
   }) => Promise<{ success: boolean; filePath?: string; error?: string }>;
+
+  // Content Roles
+  contentRoleCreate: (args: {
+    workspaceId: string;
+    name: string;
+    systemPrompt: string;
+    description?: string;
+    icon?: string;
+  }) => Promise<{ success: boolean; data?: ContentRole; error?: string }>;
+  contentRoleGetByWorkspace: (
+    workspaceId: string
+  ) => Promise<{ success: boolean; data?: ContentRole[]; error?: string }>;
+  contentRoleUpdate: (args: {
+    id: string;
+    name?: string;
+    description?: string;
+    systemPrompt?: string;
+    icon?: string;
+  }) => Promise<{ success: boolean; data?: ContentRole | null; error?: string }>;
+  contentRoleDelete: (id: string) => Promise<{ success: boolean; error?: string }>;
 }
 
 // Content Workspace Types
